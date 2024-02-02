@@ -5,6 +5,15 @@
     <title> Status </title>
 </head>
 <body>
-    <h1> Status </h1>
+    <h1>Statuses</h1>
+    <a href="{{ url_for('add_status') }}">Add New Status</a>
+    <ul>
+        {% for status in statuses %}
+            <li>{{ status.status }}
+
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('index') }}">Back to Index</a>
 </body>
 </html>

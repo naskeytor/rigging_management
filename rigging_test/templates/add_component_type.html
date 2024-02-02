@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Component Type</title>
+</head>
+<body>
+    <h1>Add New Component Type</h1>
+    <form action="{{ url_for('add_component_type') }}" method="post">
+        Component Type: <input type="text" name="component_type" required><br>
+        <input type="submit" value="Add Component Type">
+    </form>
+    <a href="{{ url_for('index') }}">Back to Index</a>
+</body>
+</html>
