@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Models</title>
+</head>
+<body>
+    <h1>Models</h1>
+    <a href="{{ url_for('add_model') }}">Add New Model</a>
+    <ul>
+        {% for model in models %}
+            <li>{{ model.model }} - {{ model.manufacturer.manufacturer }}
+                <a href="{{ url_for('edit_model', id=model.id) }}">Edit</a>
+                <form action="{{ url_for('delete_model', id=model.id) }}" method="post" style="display: inline;">
+                    <input type="submit" value="Delete">
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('index') }}">Back to Index</a>
+</body>
+</html>

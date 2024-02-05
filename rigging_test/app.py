@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from extensions import db, migrate
-from models import Manufacturer, Size, Status, ComponentType
+from models import Manufacturer, Size, Status, ComponentType, Model
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '3664atanas'
@@ -154,6 +154,46 @@ def delete_component_type(id):
     db.session.delete(component_type)
     db.session.commit()
     return redirect(url_for('view_component_types'))
+
+@app.route('/models')
+def view_models():
+    models = Model.query.all()
+    return render_template('view_models.html', models=models)
+
+@app.route('/model/add', methods=['GET', 'POST'])
+def add_model():
+    message = None
+    if request.method == 'POST':
+        new_model = Model(
+            model=request.form['model'],
+            manufacturer_id=request.form['manufacturer_id']
+        )
+        db.session.add(new_model)
+        db.session.commit()
+        message = "New model added successfully."
+
+    manufacturers = Manufacturer.query.all()
+    return render_template('add_model.html', manufacturers=manufacturers, message=message)
+
+@app.route('/model/edit/<int:id>', methods=['GET', 'POST'])
+def edit_model(id):
+    model = Model.query.get_or_404(id)
+    if request.method == 'POST':
+        model.model = request.form['model']
+        model.manufacturer_id = request.form['manufacturer_id']
+        db.session.commit()
+        return redirect(url_for('view_models'))
+
+    manufacturers = Manufacturer.query.all()
+    return render_template('edit_model.html', model=model, manufacturers=manufacturers)
+
+@app.route('/model/delete/<int:id>', methods=['POST'])
+def delete_model(id):
+    model = Model.query.get_or_404(id)
+    db.session.delete(model)
+    db.session.commit()
+    return redirect(url_for('view_models'))
+
 
 
 if __name__ == '__main__':
