@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Status</title>
+</head>
+<body>
+    <h1>Edit Status</h1>
+    <form action="{{ url_for('edit_status', id=status.id) }}" method="post">
+        Status: <input type="text" name="status" value="{{ status.status }}" required><br>
+        <input type="submit" value="Update Status">
+    </form>
+    <a href="{{ url_for('view_statuses') }}">Back to Statuses</a>
+</body>
+</html>

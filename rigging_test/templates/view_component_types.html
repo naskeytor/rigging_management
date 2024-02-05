@@ -10,7 +10,10 @@
     <ul>
         {% for type in component_types %}
         <li>{{ type.component_type }}
-
+            <a href="{{ url_for('edit_component_type', id=type.id) }}">Edit</a>
+            <form action="{{ url_for('delete_component_type', id=type.id) }}" method="post" style="display: inline;">
+                <input type="submit" value="Delete">
+            </form>
         </li>
         {% endfor %}
     </ul>
