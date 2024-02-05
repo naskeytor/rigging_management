@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Component Type</title>
+</head>
+<body>
+    <h1>Edit Component Type</h1>
+    <form action="{{ url_for('edit_component_type', id=component_type.id) }}" method="post">
+        Component Type: <input type="text" name="component_type" value="{{ component_type.component_type }}" required><br>
+        <input type="submit" value="Update Component Type">
+    </form>
+    <a href="{{ url_for('view_component_types') }}">Back to Component Type</a>
+</body>
+</html>

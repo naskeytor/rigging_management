@@ -35,6 +35,22 @@ def add_manufacturer():
         message = "New manufacturer added successfully."
     return render_template('add_manufacturer.html', message=message)
 
+@app.route('/manufacturer/edit/<int:id>', methods=['GET', 'POST'])
+def edit_manufacturer(id):
+    manufacturer = Manufacturer.query.get_or_404(id)
+    if request.method == 'POST':
+        manufacturer.manufacturer = request.form['manufacturer']
+        db.session.commit()
+        return redirect(url_for('view_manufacturers'))
+    return render_template('edit_manufacturer.html', manufacturer=manufacturer)
+
+@app.route('/manufacturer/delete/<int:id>', methods=['POST'])
+def delete_manufacturer(id):
+    manufacturer = Manufacturer.query.get_or_404(id)
+    db.session.delete(manufacturer)
+    db.session.commit()
+    return redirect(url_for('view_manufacturers'))
+
 
 #####################       Size
 
@@ -53,6 +69,22 @@ def add_size():
         db.session.commit()
         message = "New size added successfully."
     return render_template('add_size.html', message=message)
+
+@app.route('/size/edit/<int:id>', methods=['GET', 'POST'])
+def edit_size(id):
+    size = Size.query.get_or_404(id)
+    if request.method == 'POST':
+        size.size = request.form['size']
+        db.session.commit()
+        return redirect(url_for('view_sizes'))
+    return render_template('edit_size.html', size=size)
+
+@app.route('/size/delete/<int:id>', methods=['POST'])
+def delete_size(id):
+    size = Size.query.get_or_404(id)
+    db.session.delete(size)
+    db.session.commit()
+    return redirect(url_for('view_sizes'))
 
 
 #####################       Status
@@ -73,6 +105,22 @@ def add_status():
         message = "New status added successfully."
     return render_template('add_status.html', message=message)
 
+@app.route('/status/edit/<int:id>', methods=['GET', 'POST'])
+def edit_status(id):
+    status = Status.query.get_or_404(id)
+    if request.method == 'POST':
+        status.status = request.form['status']
+        db.session.commit()
+        return redirect(url_for('view_statuses'))
+    return render_template('edit_status.html', status=status)
+
+@app.route('/status/delete/<int:id>', methods=['POST'])
+def delete_status(id):
+    status = Status.query.get_or_404(id)
+    db.session.delete(status)
+    db.session.commit()
+    return redirect(url_for('view_statuses'))
+
 ####################        COmponent types
 
 
@@ -90,6 +138,22 @@ def add_component_type():
         db.session.commit()
         message = "New component type added successfully."
     return render_template('add_component_type.html', message=message)
+
+@app.route('/component_type/edit/<int:id>', methods=['GET', 'POST'])
+def edit_component_type(id):
+    component_type = ComponentType.query.get_or_404(id)
+    if request.method == 'POST':
+        component_type.component_type = request.form['component_type']
+        db.session.commit()
+        return redirect(url_for('view_component_types'))
+    return render_template('edit_component_type.html', component_type=component_type)
+
+@app.route('/component_type/delete/<int:id>', methods=['POST'])
+def delete_component_type(id):
+    component_type = ComponentType.query.get_or_404(id)
+    db.session.delete(component_type)
+    db.session.commit()
+    return redirect(url_for('view_component_types'))
 
 
 if __name__ == '__main__':

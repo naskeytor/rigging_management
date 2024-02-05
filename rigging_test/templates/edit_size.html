@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Size</title>
+</head>
+<body>
+    <h1>Edit Size</h1>
+    <form action="{{ url_for('edit_size', id=size.id) }}" method="post">
+        Size: <input type="text" name="size" value="{{ size.size }}" required><br>
+        <input type="submit" value="Update Size">
+    </form>
+    <a href="{{ url_for('view_sizes') }}">Back to Sizes</a>
+</body>
+</html>
