@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Component</title>
+</head>
+<body>
+    <h1>Edit Component</h1>
+    <form action="{{ url_for('edit_component', id=component.id) }}" method="post">
+        Component Type:
+            <select name="component_type_id" required>
+                {% for type in component_types %}
+                    <option value="{{ type.id }}" {% if type.id == component.component_type_id %} selected {% endif %}>
+                        {{ type.component_type }}
+                    </option>
+                {% endfor %}
+            </select><br>
+        Serial Number: <input type="text" name="serial_number" value="{{ component.serial_number }}" required><br>
+        Date of Manufacture: <input type="date" name="dom" value="{{ component.dom.isoformat() }}"><br>
+        Size:
+            <select name="size_id" required>
+                {% for size in component_sizes %}
+                    <option value="{{ size.id }}" {% if size.id == component.size_id %} selected {% endif %}>
+                        {{ size.size }}
+                    </option>
+                {% endfor %}
+            </select><br>
+        Status:
+            <select name="status_id" required>
+                {% for status in component_statuses %}
+                    <option value="{{ status.id }}" {% if status.id == component.status_id %} selected {% endif %}>
+                        {{ status.status }}
+                    </option>
+                {% endfor %}
+            </select><br>
+
+
+
+        <input type="submit" value="Update Component">
+    </form>
+    <a href="{{ url_for('index') }}">Back to Index</a>
+</body>
+</html>
