@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from extensions import db, migrate
-from models import Manufacturer, Size, Status, ComponentType, Model
+from models import Manufacturer, Size, Status, ComponentType, Model, Component
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '3664atanas'
@@ -14,6 +14,75 @@ migrate.init_app(app, db)
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+#####################       Component
+
+@app.route('/components')
+def view_components():
+    components = Component.query.all()
+    return render_template('view_components.html', components=components)
+
+@app.route('/component/add', methods=['GET', 'POST'])
+def add_component():
+    message = None
+    if request.method == 'POST':
+        # Extract data from form
+        new_component = Component(
+            component_type_id=request.form['component_type_id'],
+            serial_number=request.form['serial_number'],
+            dom=request.form.get('dom', None),
+            size_id=request.form.get('size_id', None),
+            status_id=request.form.get('status_id', None)
+        )
+        db.session.add(new_component)
+        db.session.commit()
+        message = "New component added successfully."
+    component_types = ComponentType.query.all()
+    component_sizes = Size.query.all()
+    component_statuses = Status.query.all()
+    return render_template('add_component.html',
+                            component_types=component_types,
+                            component_sizes=component_sizes,
+                            component_statuses=component_statuses,
+                            message=message)
+
+@app.route('/component/edit/<int:id>', methods=['GET', 'POST'])
+def edit_component(id):
+    component = Component.query.get_or_404(id)
+    component_types = ComponentType.query.all()  # Fetch all component types
+    component_sizes = Size.query.all()  # Fetch all sizes
+    component_statuses = Status.query.all()  # Fetch all statuses
+    #rigs = Rig.query.all()  # Fetch all rigs
+
+    if request.method == 'POST':
+        # Update component with form data
+        component.component_type_id = request.form['component_type_id']
+        component.serial_number = request.form['serial_number']
+        component.dom = request.form.get('dom', None)
+        component.size_id = request.form.get('size_id', None)
+        component.status_id = request.form.get('status_id', None)
+
+        # Handle assigning component to a rig
+        """rig_id = request.form.get('rig_id')
+        if rig_id:
+            component.rig_id = rig_id  # Assign component to selected rig"""
+
+        db.session.commit()
+        return redirect(url_for('view_components'))
+
+    return render_template('edit_component.html',
+                           component=component,
+                           component_types=component_types,
+                           component_sizes=component_sizes,
+                           component_statuses=component_statuses)
+
+@app.route('/component/delete/<int:id>', methods=['POST'])
+def delete_component(id):
+    component = Component.query.get_or_404(id)
+    db.session.delete(component)
+    db.session.commit()
+    return redirect(url_for('view_components'))
 
 
 #####################       Manifacturer
