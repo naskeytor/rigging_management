@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add New Rig</title>
+</head>
+<body>
+    <h1>Add New Rig</h1>
+    <form action="{{ url_for('add_rig') }}" method="post">
+
+        <label for="rig_number">Rig Number:</label>
+        <input type="text" name="rig_number" id="rig_number" required>
+
+        <label for="canopy">Canopy:</label>
+        <select name="canopy" id="canopy">
+            <option value="">-- Select Canopy --</option>
+            {% for canopy in available_canopies %}
+                <option value="{{ canopy.serial_number }}">{{ canopy.serial_number }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="container">Container:</label>
+        <select name="container" id="container">
+            <option value="">-- Select Container --</option>
+            {% for container in available_containers %}
+                <option value="{{ container.serial_number }}">{{ container.serial_number }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="reserve">Reserve:</label>
+        <select name="reserve" id="reserve">
+            <option value="">-- Select Reserve --</option>
+            {% for reserve in available_reserves %}
+                <option value="{{ reserve.serial_number }}">{{ reserve.serial_number }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="aad">AAD:</label>
+        <select name="aad" id="aad">
+            <option value="">-- Select Aad --</option>
+            {% for aad in available_aads %}
+                <option value="{{ aad.serial_number }}">{{ aad.serial_number }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Add Rig">
+    </form>
+<a href="{{ url_for('list_rigs') }}">Back to Components</a>
+</body>
+</html>
