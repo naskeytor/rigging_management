@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Rig</title>
+</head>
+<body>
+    <h1>Edit Rig</h1>
+    <form action="{{ url_for('edit_rig', rig_id=rig.id) }}" method="post">
+        <label for="rig_number">Rig Number:</label>
+        <input type="text" name="rig_number" id="rig_number" value="{{ rig.rig_number }}" required>
+
+        <label for="canopy">Canopy:</label>
+        <select name="canopy" id="canopy">
+            <option value="">-- Select Canopy --</option>
+            {% for canopy in available_canopies %}
+                <option value="{{ canopy.serial_number }}" {% if canopy.serial_number == rig.canopy_serial %}selected{% endif %}>{{ canopy.serial_number }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="container">Container:</label>
+        <select name="container" id="container">
+            <option value="">-- Select Container --</option>
+            {% for container in available_containers %}
+                <option value="{{ container.serial_number }}" {% if container.serial_number == rig.container_serial %}selected{% endif %}>{{ container.serial_number }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="reserve">Reserve:</label>
+        <select name="reserve" id="reserve">
+            <option value="">-- Select Reserve --</option>
+            {% for reserve in available_reserves %}
+                <option value="{{ reserve.serial_number }}" {% if reserve.serial_number == rig.reserve_serial %}selected{% endif %}>{{ reserve.serial_number }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="aad">AAD:</label>
+        <select name="aad" id="aad">
+            <option value="">-- Select Aad --</option>
+            {% for aad in available_aads %}
+                <option value="{{ aad.serial_number }}" {% if aad.serial_number == rig.aad_serial %}selected{% endif %}>{{ aad.serial_number }}</option>
+            {% endfor %}
+        </select>
+
+        <input type="submit" value="Update Rig">
+    </form>
+    <a href="{{ url_for('list_rigs') }}">Back to Rigs</a>
+</body>
+</html>

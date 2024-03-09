@@ -33,6 +33,14 @@
                     </option>
                 {% endfor %}
             </select><br>
+        Model:
+            <select name="model_id" required>
+                {% for model in component_models %}
+                    <option value="{{ model.id }}" {% if model.id == component.model_id %} selected {% endif %}>
+                        {{ model.model }}
+                    </option>
+                {% endfor %}
+            </select><br>
 
 
 

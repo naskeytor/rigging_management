@@ -27,6 +27,13 @@
                     <option value="{{ status.id }}">{{ status.status }}</option>
                 {% endfor %}
             </select><br>
+        Model:
+            <select name="model_id" required>
+                {% for model in component_models %}
+                    <option value="{{ model.id }}">{{ model.model }}</option>
+                {% endfor %}
+            </select><br>
+
         <input type="submit" value="Add Component">
     </form>
     <a href="{{ url_for('view_components') }}">Back to Components</a>
