@@ -16,7 +16,7 @@
                     <form action="{{ url_for('delete_rig', rig_id=rig.id) }}" method="POST">
                         <input type="submit" value="Eliminar">
                     </form>
-
+                    <a href="{{ url_for('show_rig', rig_id=rig.id) }}">Show</a>
                     <ul>
                         <li>Canopy: {{ rig.canopy.serial_number if rig.canopy else '' }}</li>
                         <li>Container: {{ rig.container.serial_number if rig.container else '' }}</li>

@@ -54,6 +54,7 @@ class Component(db.Model):
     serial_number = db.Column(db.String(50), nullable=False)
     dom = db.Column(db.Date, default=date.today, nullable=False)
     size_id = db.Column(db.Integer, db.ForeignKey('size.id'), nullable=True)
+    sizes = db.relationship('Size', backref='related_components')
     status_id = db.Column(db.Integer, db.ForeignKey('status.id'), nullable=True)
 
     # La relación con Rig se maneja a través de la tabla de asociación en el modelo Rig
