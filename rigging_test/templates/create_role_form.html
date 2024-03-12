@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Rol</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2>Crear Nuevo Rol</h2>
+
+        <!-- Mostrar mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('create_role') }}">
+            <div class="mb-3">
+                <label for="role_name" class="form-label">Nombre del Rol:</label>
+                <input type="text" class="form-control" id="role_name" name="role_name" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Crear Rol</button>
+        </form>
+
+        <!-- Enlace para regresar al dashboard -->
+        <a href="{{ url_for('admin_dashboard') }}">Regresar al Dashboard</a>
+    </div>
+</body>
+</html>

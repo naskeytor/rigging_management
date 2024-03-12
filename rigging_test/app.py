@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from extensions import db, migrate
-from models import Manufacturer, Size, Status, ComponentType, Model, Component, Rig, User
+from models import Manufacturer, Size, Status, ComponentType, Model, Component, Rig, User, Role
 from utilities import find_component_by_serial, prepare_component_data
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '3664atanas'
@@ -27,8 +27,19 @@ def register():
         password = request.form['password']
         user = User(username=username, email=email)
         user.set_password(password)
+
+        role = Role.query.filter_by(name='user').first()
+        if not role:
+            # Crear el rol si no existe
+            role = Role(name='user')
+            db.session.add(role)
+            db.session.commit()
+
+        user.roles.append(role)
+
         db.session.add(user)
         db.session.commit()
+        return redirect(url_for('login'))
         # Redirige o maneja el flujo post-registro
     return render_template('register.html')
 
@@ -44,6 +55,152 @@ def login():
         else:
             flash('Nombre de usuario o contraseña incorrectos.', 'danger')
     return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+@app.route('/admin')
+@login_required
+def admin_dashboard():
+    if not current_user.is_admin():
+        return redirect(url_for('index'))  # Redirige a los usuarios no administradores
+    return render_template('admin_dashboard.html')
+
+
+@app.route('/edit_user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def edit_user(user_id):
+    if not current_user.has_role('admin'):
+        flash('Solo los administradores pueden editar usuarios.', 'danger')
+        return redirect(url_for('index'))
+
+    user = User.query.get_or_404(user_id)
+
+    if request.method == 'POST':
+        user.username = request.form['username']
+        user.email = request.form['email']
+        # Realiza aquí cualquier otra actualización necesaria
+        db.session.commit()
+        flash('Usuario actualizado correctamente.', 'success')
+        return redirect(url_for('user_list'))
+
+    return render_template('edit_user.html', user=user)
+
+@app.route('/delete_user/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    if not current_user.has_role('admin'):
+        flash('Solo los administradores pueden eliminar usuarios.', 'danger')
+        return redirect(url_for('index'))
+
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    flash('Usuario eliminado correctamente.', 'success')
+    return redirect(url_for('user_list'))
+
+
+@app.route('/user_list')
+@login_required
+def user_list():
+    if not current_user.is_admin():
+        return redirect(url_for('index'))  # Solo permitir acceso a los administradores
+
+    users = User.query.all()  # Obtener todos los usuarios
+    return render_template('user_list.html', users=users)
+
+
+@app.route('/create_role', methods=['GET', 'POST'])
+@login_required
+def create_role():
+    if not current_user.is_admin():
+        return redirect(url_for('index'))  # Asegúrate de que solo los admins puedan acceder
+
+    if request.method == 'POST':
+        role_name = request.form['role_name']
+        if role_name:
+            existing_role = Role.query.filter_by(name=role_name).first()
+            if not existing_role:
+                new_role = Role(name=role_name)
+                db.session.add(new_role)
+                db.session.commit()
+                flash('Rol creado exitosamente.', 'success')
+            else:
+                flash('El rol ya existe.', 'warning')
+        else:
+            flash('El nombre del rol no puede estar vacío.', 'danger')
+
+        return redirect(url_for('list_roles'))
+
+    # Si el método es GET, simplemente muestra el formulario
+    return render_template('create_role_form.html')
+
+
+@app.route('/list_roles')
+@login_required
+def list_roles():
+    if not current_user.is_admin():
+        return redirect(url_for('index'))  # Asegurarse de que solo los admins pueden ver los roles
+    roles = Role.query.all()
+    return render_template('role_list.html', roles=roles)
+
+
+@app.route('/assign_roles', methods=['GET', 'POST'])
+@app.route('/assign_roles/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def assign_roles(user_id=None):
+    # Comprobar si el usuario actual es administrador.
+    if not current_user.has_role('admin'):
+        flash('Solo los administradores pueden asignar roles.', 'danger')
+        return redirect(url_for('index'))
+
+    users = User.query.all()
+    roles = Role.query.all()
+    selected_user = User.query.get(user_id) if user_id else None
+
+    if request.method == 'POST':
+        user_id = request.form.get('user_id')
+        selected_role_ids = request.form.getlist('role_ids')
+        user = User.query.get(user_id)
+
+        # Actualizar los roles del usuario
+        user.roles = []
+        for role_id in selected_role_ids:
+            role = Role.query.get(role_id)
+            if role:
+                user.roles.append(role)
+
+        db.session.commit()
+        flash('Roles asignados correctamente.', 'success')
+        return redirect(url_for('user_list'))
+
+    users = User.query.all()
+    roles = Role.query.all()
+    selected_user = User.query.get(user_id) if user_id else None
+    return render_template('assign_roles.html', users=users, roles=roles, selected_user=selected_user)
+
+@app.route('/delete_role/<int:role_id>', methods=['POST'])
+@login_required
+def delete_role(role_id):
+    if not current_user.has_role('admin'):
+        flash('Solo los administradores pueden eliminar roles.', 'danger')
+        return redirect(url_for('index'))
+
+    role = Role.query.get_or_404(role_id)
+
+    # Eliminar el rol de todos los usuarios que lo tengan asignado
+    for user in User.query.all():
+        if role in user.roles:
+            user.roles.remove(role)
+
+    db.session.delete(role)
+    db.session.commit()
+    flash('Rol eliminado correctamente y desasignado de todos los usuarios.', 'success')
+    return redirect(url_for('list_roles'))
+
 
 
 
