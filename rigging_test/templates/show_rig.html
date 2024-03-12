@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Metadata y links aquí -->
+</head>
+<body>
+    <div class="container">
+        <h2>Detalles del Rig</h2>
+
+        <ul>
+            <li>Canopy: {{ rig.canopy.model.model if rig.canopy else '' }}-{{ rig.canopy.sizes.size }}</li>
+            <li>Container: {{ rig.container.model.model if rig.container else '' }}</li>
+            <li>Reserve: {{ rig.reserve.model.model if rig.reserve else '' }}-{{ rig.reserve.sizes.size }}</li>
+            <li>AAD: {{ rig.aad.model.model if rig.aad else '' }}</li>
+        </ul>
+
+        <!-- <p><strong>Número del Rig:</strong> {{ rig.rig_number }}</p>
+        <p><strong>Canopy:</strong> {{ rig.canopy.model }}</p> -->
+        <!-- Incluye más detalles según tu modelo Rig -->
+        <a href="{{ url_for('list_rigs') }}">Volver a la lista</a>
+    </div>
+</body>
+</html>

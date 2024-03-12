@@ -216,6 +216,13 @@ def view_components():
     components = Component.query.all()
     return render_template('view_components.html', components=components)
 
+@app.route('/component/show/<int:component_id>')
+@login_required
+def show_component(component_id):
+    component = Component.query.get_or_404(component_id)
+    return render_template('show_component.html', component=component)
+
+
 @app.route('/component/add', methods=['GET', 'POST'])
 def add_component():
     message = None
@@ -472,11 +479,11 @@ def list_rigs():
     rigs = Rig.query.all()
     return render_template('rigs.html', rigs=rigs)
 
-"""@app.route('/rigs/view/<int:rig_id>')
-def view_rigs(rig_id):
-    rigs = Rig.query.get_or_404(rig_id)
-    return render_template('rigs.html', rig=rigs)"""
-
+@app.route('/rig/<int:rig_id>')
+@login_required
+def show_rig(rig_id):
+    rig = Rig.query.get_or_404(rig_id)
+    return render_template('show_rig.html', rig=rig)
 
 @app.route('/rigs/add', methods=['GET', 'POST'])
 def add_rig():
