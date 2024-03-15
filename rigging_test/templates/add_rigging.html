@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Añadir Rigging</title>
+</head>
+<body>
+    <h1>Añadir nuevo Rigging</h1>
+    <form method="post">
+        <label for="date">Fecha:</label>
+        <input type="date" name="date" id="date" required>
+        <br>
+        <label for="serial_numbers">Seleccionar número de serie:</label>
+        <select id="serial_numbers" name="serial_numbers" required>
+            <optgroup label="Componentes">
+                {% for component in components %}
+                    <option value="Component-{{ component.id }}" {% if preselected_component_id == component.id %}selected{% endif %}>{{ component.serial_number }}</option>
+                {% endfor %}
+            </optgroup>
+            <optgroup label="Rigs">
+                {% for rig in rigs %}
+                    <option value="Rig-{{ rig.id }}">{{ rig.rig_number }}</option>
+                {% endfor %}
+            </optgroup>
+        </select>
+        <br>
+        <label for="description">Descripción:</label>
+        <textarea name="description" id="description"></textarea>
+        <br>
+        <input type="submit" value="Añadir Rigging">
+    </form>
+</body>
+</html>

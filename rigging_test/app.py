@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from extensions import db, migrate
-from models import Manufacturer, Size, Status, ComponentType, Model, Component, Rig, User, Role
+from models import Manufacturer, Size, Status, ComponentType, Model, Component, Rig, User, Role, Rigging
 from utilities import find_component_by_serial, prepare_component_data
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
@@ -220,7 +220,10 @@ def view_components():
 @login_required
 def show_component(component_id):
     component = Component.query.get_or_404(component_id)
-    return render_template('show_component.html', component=component)
+    # Obtener los registros de Rigging asociados a este componente
+    riggings = Rigging.query.filter_by(component_id=component.id).order_by(Rigging.date.desc()).all()
+    return render_template('show_component.html', component=component, riggings=riggings)
+
 
 
 @app.route('/component/add', methods=['GET', 'POST'])
@@ -599,6 +602,62 @@ def edit_rig(rig_id):
         return render_template('edit_rig.html', available_canopies=available_canopies,
                                available_containers=available_containers, available_reserves=available_reserves,
                                available_aads=available_aads, rig=rig)
+
+@app.route('/rigging')
+def list_rigging():
+    rigging = Rigging.query.all()
+    return render_template('rigging.html', rigging=rigging)
+
+
+@app.route('/rigging/add', methods=['GET', 'POST'])
+@app.route('/rigging/add/component/<int:component_id>', methods=['GET', 'POST'])
+@login_required
+def rigging_add(component_id=None):
+    if request.method == 'POST':
+        date = request.form.get('date')
+        selected_value = request.form.get('serial_numbers')
+        serial_numbers = ''
+
+        rig_id = None
+        component_id = component_id or None
+
+        # Si ya se proporciona el ID del componente, úsalo directamente
+        if component_id:
+            component = Component.query.get(int(component_id))
+            if component:
+                serial_numbers = component.serial_number
+                component_id = component.id
+        else:
+            # Extrae el tipo y el ID del valor seleccionado
+            selection_type, selection_id = selected_value.split('-')
+
+            # Determina si el valor seleccionado pertenece a un Component o a un Rig
+            if selection_type == "Component":
+                component = Component.query.get(int(selection_id))
+                serial_numbers = component.serial_number
+                if component:
+                    component_id = component.id
+            elif selection_type == "Rig":
+                rig = Rig.query.get(int(selection_id))
+                serial_numbers = rig.rig_number
+                if rig:
+                    rig_id = rig.id
+
+        # Crea y guarda el nuevo registro de Rigging si se encontró un componente o rig válido
+        if rig_id or component_id:
+            new_rigging = Rigging(date=date, serial_numbers=serial_numbers, rig_id=rig_id, component_id=component_id)
+            db.session.add(new_rigging)
+            db.session.commit()
+            flash('Rigging añadido correctamente.', 'success')
+        else:
+            flash('Error al añadir Rigging: valor seleccionado inválido.', 'danger')
+
+        return redirect(url_for('list_rigging'))
+
+    components = Component.query.all() if not component_id else [Component.query.get(int(component_id))]
+    rigs = Rig.query.all()
+    return render_template('add_rigging.html', components=components, rigs=rigs, preselected_component_id=component_id)
+
 
 
 
