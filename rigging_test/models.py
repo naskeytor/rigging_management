@@ -1,5 +1,5 @@
 from extensions import db
-from datetime import date
+from datetime import date, datetime
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -54,7 +54,8 @@ class Component(db.Model):
     serial_number = db.Column(db.String(50), nullable=False)
     dom = db.Column(db.Date, default=date.today, nullable=False)
     size_id = db.Column(db.Integer, db.ForeignKey('size.id'), nullable=True)
-    sizes = db.relationship('Size', backref='related_components')
+    #sizes = db.relationship('Size', backref='related_components')
+    sizes = db.relationship('Size', back_populates='components')
     status_id = db.Column(db.Integer, db.ForeignKey('status.id'), nullable=True)
 
     # La relación con Rig se maneja a través de la tabla de asociación en el modelo Rig
@@ -80,7 +81,8 @@ class Size(db.Model):
     size = db.Column(db.String(50), nullable=True)
 
     # Relationship to link back to Component
-    components = db.relationship('Component', backref='size', lazy=True, cascade="all, delete-orphan")
+    #components = db.relationship('Component', backref='size', lazy=True, cascade="all, delete-orphan")
+    components = db.relationship('Component', back_populates='sizes')
 
     def __repr__(self):
         return f'<Size {self.size}>'
@@ -155,8 +157,19 @@ class Rig(db.Model):
                 return component
         return None
 
-    # Relaciones con otros modelos como antes
-    #riggings = db.relationship('Rigging', back_populates='rig')
-
     def __repr__(self):
         return f'<Rig {self.rig_number}>'
+
+class Rigging(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
+    serial_numbers = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+
+        # Si necesitas mantener una referencia a los objetos específicos, puedes agregar campos opcionales
+    rig_id = db.Column(db.Integer, db.ForeignKey('rig.id'), nullable=True)
+    component_id = db.Column(db.Integer, db.ForeignKey('component.id'), nullable=True)
+
+    def __repr__(self):
+        return f'<Rigging {self.id} on {self.date}>'
+

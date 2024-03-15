@@ -14,8 +14,30 @@
         <p><strong>Fecha de Manufactura:</strong> {{ component.dom }}</p>
         <!-- Agrega aquí más detalles según los campos de tu modelo Component -->
 
+        <h3>Registros de Rigging</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Descripción</th>
+                    <th>Número de Serie</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rigging in riggings %}
+                <tr>
+                    <td>{{ rigging.date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ rigging.description }}</td>
+                    <td>{{ rigging.serial_numbers }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+
         <!-- Botón para regresar a la lista de componentes -->
         <a href="{{ url_for('view_components') }}">Volver a la lista</a>
+        <a href="{{ url_for('rigging_add', component_id=component.id) }}" class="btn btn-primary">Añadir Rigging</a>
     </div>
 </body>
 </html>
