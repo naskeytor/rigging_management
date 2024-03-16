@@ -12,14 +12,16 @@
             {% for rigging in rigging %}
                 <li>
                     Fecha: {{ rigging.date.strftime('%Y-%m-%d') }}
+                    Rigger: {{ rigging.rigger }}
                     <br>
                     Número de serie: {{ rigging.serial_numbers }}
                     {% if rigging.rig_id %}
                         <br>
-                        Rig asociado: {{ rigging.rig_id.rig_number }}
+                        Rig: {{ rigging.rig_id.rig_number }}
                     {% elif rigging.component_id %}
                         <br>
-                        Componente asociado: {{ rigging.component_id.serial_number }}
+                        Componente: {{ rigging.component.component_type.component_type }}
+
                     {% else %}
                         <br>
                         No asociado a Rig o Componente específico.

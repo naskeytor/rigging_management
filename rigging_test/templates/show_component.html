@@ -19,6 +19,7 @@
             <thead>
                 <tr>
                     <th>Fecha</th>
+                    <th>Rigger</th>
                     <th>Descripción</th>
                     <th>Número de Serie</th>
                 </tr>
@@ -27,6 +28,7 @@
                 {% for rigging in riggings %}
                 <tr>
                     <td>{{ rigging.date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ rigging.rigger.username }}</td>
                     <td>{{ rigging.description }}</td>
                     <td>{{ rigging.serial_numbers }}</td>
                 </tr>
