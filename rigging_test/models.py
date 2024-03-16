@@ -33,7 +33,7 @@ class User(UserMixin, db.Model):
         return any(role.name == role_name for role in self.roles)
 
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'{self.username}'
 
 
 
@@ -47,6 +47,8 @@ rig_component_association = db.Table('rig_component_association',
 class Component(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     component_type_id = db.Column(db.Integer, db.ForeignKey('component_type.id'), nullable=False)
+    component_type = db.relationship('ComponentType', back_populates='components')
+
 
     model_id = db.Column(db.Integer, db.ForeignKey('model.id'), nullable=True)  # Nueva clave foránea
     model = db.relationship('Model', backref='components')
@@ -103,7 +105,7 @@ class ComponentType(db.Model):
     component_type = db.Column(db.String(50), nullable=False)
 
     # Relationship to link back to Component
-    components = db.relationship('Component', backref='component_type', lazy=True, cascade="all, delete-orphan")
+    components = db.relationship('Component', back_populates='component_type', lazy=True)
     def __repr__(self):
         return f'<ComponentType {self.component_type}>'
 
@@ -166,9 +168,13 @@ class Rigging(db.Model):
     serial_numbers = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=True)
 
+    rigger_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    rigger = db.relationship('User', backref='riggings')
+
         # Si necesitas mantener una referencia a los objetos específicos, puedes agregar campos opcionales
     rig_id = db.Column(db.Integer, db.ForeignKey('rig.id'), nullable=True)
     component_id = db.Column(db.Integer, db.ForeignKey('component.id'), nullable=True)
+    component = db.relationship('Component', backref='riggings')
 
     def __repr__(self):
         return f'<Rigging {self.id} on {self.date}>'

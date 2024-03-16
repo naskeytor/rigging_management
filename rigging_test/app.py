@@ -643,9 +643,12 @@ def rigging_add(component_id=None):
                 if rig:
                     rig_id = rig.id
 
+        # Determina el rigger_id basado en los roles del usuario actual
+        rigger_id = current_user.id if 'rigger' in [role.name for role in current_user.roles] else None
+
         # Crea y guarda el nuevo registro de Rigging si se encontró un componente o rig válido
         if rig_id or component_id:
-            new_rigging = Rigging(date=date, serial_numbers=serial_numbers, rig_id=rig_id, component_id=component_id)
+            new_rigging = Rigging(date=date, serial_numbers=serial_numbers, rig_id=rig_id, component_id=component_id, rigger_id=rigger_id)
             db.session.add(new_rigging)
             db.session.commit()
             flash('Rigging añadido correctamente.', 'success')
@@ -657,6 +660,7 @@ def rigging_add(component_id=None):
     components = Component.query.all() if not component_id else [Component.query.get(int(component_id))]
     rigs = Rig.query.all()
     return render_template('add_rigging.html', components=components, rigs=rigs, preselected_component_id=component_id)
+
 
 
 
