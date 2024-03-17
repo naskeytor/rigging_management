@@ -486,7 +486,8 @@ def list_rigs():
 @login_required
 def show_rig(rig_id):
     rig = Rig.query.get_or_404(rig_id)
-    return render_template('show_rig.html', rig=rig)
+    riggings = Rigging.query.filter((Rigging.rig_id == rig_id) | (Rigging.serial_numbers == rig.rig_number)).order_by(Rigging.date.desc()).all()
+    return render_template('show_rig.html', rig=rig, riggings=riggings)
 
 @app.route('/rigs/add', methods=['GET', 'POST'])
 def add_rig():
@@ -662,7 +663,59 @@ def rigging_add(component_id=None):
     return render_template('add_rigging.html', components=components, rigs=rigs, preselected_component_id=component_id)
 
 
+@app.route('/rigging/edit/<int:rigging_id>', methods=['GET', 'POST'])
+@login_required
+def edit_rigging(rigging_id):
+    rigging = Rigging.query.get_or_404(rigging_id)
 
+    if request.method == 'POST':
+        date = request.form.get('date')
+        description = request.form.get('description')
+        selected_value = request.form.get('serial_numbers')
+
+        rig_id = None
+        component_id = None
+
+        # Extrae el tipo y el ID del valor seleccionado
+        selection_type, selection_id = selected_value.split('-')
+
+        # Determina si el valor seleccionado pertenece a un Component o a un Rig
+        if selection_type == "Component":
+            component = Component.query.get(int(selection_id))
+            if component:
+                rigging.serial_numbers = component.serial_number
+                component_id = component.id
+        elif selection_type == "Rig":
+            rig = Rig.query.get(int(selection_id))
+            if rig:
+                rigging.serial_numbers = rig.rig_number
+                rig_id = rig.id
+
+        # Actualiza el registro de Rigging
+        rigging.date = date
+        rigging.description = description
+        rigging.component_id = component_id
+        rigging.rig_id = rig_id
+
+        db.session.commit()
+        flash('Rigging actualizado correctamente.', 'success')
+        return redirect(url_for('list_rigging', rigging_id=rigging.id))
+
+    components = Component.query.all()
+    rigs = Rig.query.all()
+    return render_template('edit_rigging.html', rigging=rigging, components=components, rigs=rigs)
+
+
+@app.route('/rigging/delete/<int:rigging_id>', methods=['POST'])
+@login_required
+def delete_rigging(rigging_id):
+    rigging = Rigging.query.get_or_404(rigging_id)
+
+    db.session.delete(rigging)
+    db.session.commit()
+    flash('Rigging eliminado correctamente.', 'success')
+
+    return redirect(url_for('list_rigging'))
 
 
 if __name__ == '__main__':
