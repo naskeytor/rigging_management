@@ -31,6 +31,12 @@
                     <td>{{ rigging.rigger.username }}</td>
                     <td>{{ rigging.description }}</td>
                     <td>{{ rigging.serial_numbers }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_rigging', rigging_id=rigging.id) }}" class="btn btn-primary">Editar</a>
+                        <form action="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" method="post" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este registro de rigging?');">
+                            <input type="submit" value="Eliminar" class="btn btn-danger">
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
