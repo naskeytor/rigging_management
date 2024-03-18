@@ -13,6 +13,7 @@
                 <li>
                     Fecha: {{ rigging.date.strftime('%Y-%m-%d') }}
                     Rigger: {{ rigging.rigger }}
+                    Action: {{ rigging.type_rigging.value }}
                     <br>
                     Número de serie: {{ rigging.serial_numbers }}
                     {% if rigging.rig_id %}

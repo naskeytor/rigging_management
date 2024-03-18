@@ -2,6 +2,7 @@ from extensions import db
 from datetime import date, datetime
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from enum import Enum
 
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -162,6 +163,12 @@ class Rig(db.Model):
     def __repr__(self):
         return f'<Rig {self.rig_number}>'
 
+class RiggingType(Enum):
+    INSPECTION_REPACK = "I+R"
+    REPARATION = "Reparation"
+    ALTERATION = "Alteration"
+    FABRICATION = "Fabrication"
+
 class Rigging(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False, default=datetime.utcnow)
@@ -175,6 +182,8 @@ class Rigging(db.Model):
     rig_id = db.Column(db.Integer, db.ForeignKey('rig.id'), nullable=True)
     component_id = db.Column(db.Integer, db.ForeignKey('component.id'), nullable=True)
     component = db.relationship('Component', backref='riggings')
+
+    type_rigging = db.Column(db.Enum(RiggingType), nullable=False)
 
     def __repr__(self):
         return f'<Rigging {self.id} on {self.date}>'

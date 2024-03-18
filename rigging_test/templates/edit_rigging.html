@@ -11,7 +11,17 @@
         <input type="date" name="date" id="date" value="{{ rigging.date.strftime('%Y-%m-%d') }}" required>
         <br>
 
+        <label for="type_rigging">Tipo de Rigging:</label>
+        <select name="type_rigging" id="type_rigging" required>
+            {% for type in RiggingType %}
+            <option value="{{ type.name }}" {% if rigging.type_rigging.name == type.name %}selected{% endif %}>
+                {{ type.value }}
+            </option>
+            {% endfor %}
+        </select>
+
         <label for="serial_numbers">Seleccionar número de serie:</label>
+
         <select id="serial_numbers" name="serial_numbers" required>
             <optgroup label="Componentes">
                 {% for component in components %}
