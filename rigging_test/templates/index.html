@@ -1,25 +1,32 @@
 <!-- index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Inicio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rigging Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Index</h1>
-    <ul>
-        <li> Current user: {{ current_user.username }} </li>
-        <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
-        <li><a href="{{ url_for('view_manufacturers') }}">Manufacturers</a></li>
-        <li><a href="{{ url_for('view_sizes') }}">Sizes</a></li>
-        <li><a href="{{ url_for('view_statuses') }}">Statuses</a></li>
-        <li><a href="{{ url_for('view_component_types') }}">Component Types</a></li>
-        <li><a href="{{ url_for('view_models') }}">Models</a></li>
-        <li><a href="{{ url_for('view_components') }}">Components</a></li>
-        <li><a href="{{ url_for('list_rigs') }}">Rigs</a></li>
-        <li><a href="{{ url_for('register') }}">Register</a></li>
-        <li><a href="{{ url_for('login') }}">Login</a></li>
-        <li><a href="{{ url_for('logout') }}">Logout</a></li>
-        <li><a href="{{ url_for('list_rigging') }}">Rigging</a></li>
-    </ul>
+    <div class="navbar">
+        <h1>Rigging Management</h1>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <ul>
+                <li><a href="/rigs">Rigs</a></li>
+                <li><a href="/canopies">Canopies</a></li>
+                <li><a href="/containers">Containers</a></li>
+                <li><a href="/reserves">Reserves</a></li>
+                <li><a href="/aad">AAD</a></li>
+            </ul>
+        </div>
+    {% block content %}
+    <!-- El contenido específico de cada página se insertará aquí -->
+    {% endblock %}
+</div>
+
 </body>
+
 </html>
