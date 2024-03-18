@@ -29,6 +29,7 @@
                 <tr>
                     <td>{{ rigging.date.strftime('%Y-%m-%d') }}</td>
                     <td>{{ rigging.rigger.username if rigging.rigger else 'N/A' }}</td>
+                    <td>{{ rigging.type_rigging.value }}</td>
                     <td>{{ rigging.description }}</td>
                     <td>{{ rigging.serial_numbers }}</td>
                     <td>

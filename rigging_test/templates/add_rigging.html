@@ -9,6 +9,13 @@
     <form method="post">
         <label for="date">Fecha:</label>
         <input type="date" name="date" id="date" required>
+        <label for="type_rigging">Tipo de Rigging:</label>
+        <select name="type_rigging" id="type_rigging" required>
+            <option value="INSPECTION_REPACK" {% if rigging.type_rigging == RiggingType.INSPECTION_REPACK %}selected{% endif %}>Inspection + Repack (I+R)</option>
+            <option value="REPARATION" {% if rigging.type_rigging == RiggingType.REPARATION %}selected{% endif %}>Reparation</option>
+            <option value="ALTERATION" {% if rigging.type_rigging == RiggingType.ALTERATION %}selected{% endif %}>Alteration</option>
+            <option value="FABRICATION" {% if rigging.type_rigging == RiggingType.FABRICATION %}selected{% endif %}>Fabrication</option>
+        </select>
         <br>
         <label for="serial_numbers">Seleccionar número de serie:</label>
         <select id="serial_numbers" name="serial_numbers" required>
