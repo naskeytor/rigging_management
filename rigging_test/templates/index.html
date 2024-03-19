@@ -1,11 +1,13 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rigging Management</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
     <div class="navbar">
@@ -16,17 +18,17 @@
         <div class="tabs">
             <ul>
                 <li><a href="/rigs">Rigs</a></li>
-                <li><a href="/canopies">Canopies</a></li>
-                <li><a href="/containers">Containers</a></li>
-                <li><a href="/reserves">Reserves</a></li>
-                <li><a href="/aad">AAD</a></li>
+                <li><a href="/components/Canopy">Canopies</a></li>
+                <li><a href="/components/Container">Containers</a></li>
+                <li><a href="/components/Reserve">Reserves</a></li>
+                <li><a href="/components/Aad">AAD</a></li>
             </ul>
         </div>
-    {% block content %}
-    <!-- El contenido específico de cada página se insertará aquí -->
-    {% endblock %}
-</div>
+        {% block content %}
+        <!-- El contenido específico de cada página se insertará aquí -->
+        {% endblock %}
+    </div>
 
 </body>
-
 </html>
+

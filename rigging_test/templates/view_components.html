@@ -1,23 +1,121 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Components</title>
-</head>
-<body>
-    <h1>Components</h1>
-    <a href="{{ url_for('add_component') }}">Add New Component</a>
-    <ul>
+{% extends 'index.html' %}
+
+{% block content %}
+<table class="full-width-table">
+    <thead class="header">
+        <tr>
+            <th>Serial Number</th>
+            <th>Model</th>
+            {% if not is_aad %}<th>Size</th>{% endif %}
+            <th>Dom</th>
+            <th>Mounted On</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody class="header-element">
         {% for component in components %}
-            <li>{{ component.model.model }} - {{ component.serial_number }} - {{ component.component_type.component_type }} - {{ component.rig.rig_number }}
-                <a href="{{ url_for('edit_component', id=component.id) }}">Edit</a>
-                <form action="{{ url_for('delete_component', id=component.id) }}" method="post" style="display: inline;">
-                    <input type="submit" value="Delete">
-                </form>
-                <a href="{{ url_for('show_component', component_id=component.id) }}">View</a>
-            </li>
+        <tr>
+            <td>{{ component.serial_number | default('', true) }}</td>
+            <td>{{ component.model | default('', true) }}</td>
+            {% if not is_aad %}<td>{{ component.sizes.size | default('', true) }}</td>{% endif %}
+            <td>{{ component.dom | default('', true) }}</td>
+            <td>{{ component.rig.rig_number if component.rig else '' }}</td>
+            <td>
+                <!-- Botón que abre el modal -->
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#componentModal-{{ component.id }}">
+                    Ver detalles
+                </button>
+            </td>
+        </tr>
         {% endfor %}
-    </ul>
-    <a href="{{ url_for('index') }}">Back to Index</a>
-</body>
-</html>
+    </tbody>
+</table>
+
+<!-- Modal estructura -->
+{% for component in components %}
+<div class="modal fade" id="componentModal-{{ component.id }}" tabindex="-1" role="dialog" aria-labelledby="componentModalLabel-{{ component.id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="componentModalLabel-{{ component.id }}">Detalles del Componente</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+        <!-- Pestañas -->
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="view-tab" data-toggle="tab" data-target="#view" type="button" role="tab" aria-controls="view" aria-selected="true">Ver</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="edit-tab" data-toggle="tab" data-target="#edit" type="button" role="tab" aria-controls="edit" aria-selected="false">Editar</button>
+                  </li>
+                </ul>
+
+        <!-- Contenido de las pestañas -->
+                <div class="tab-content" id="myTabContent">
+                  <!-- Pestaña Ver -->
+                  <div class="tab-pane fade show active" id="view" role="tabpanel" aria-labelledby="view-tab">
+                    <!-- Contenido de Ver -->
+
+                      <div class="container">
+                        <h2>Detalle del Componente</h2>
+                        <p><strong>ID:</strong> {{ component.id }}</p>
+                        <p><strong>Tipo:</strong> {{ component.component_type.component_type }}</p>
+                        <p><strong>Número de Serie:</strong> {{ component.serial_number }}</p>
+                        <p><strong>Fecha de Manufactura:</strong> {{ component.dom }}</p>
+
+                        <h3>Registros de Rigging</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Rigger</th>
+                                    <th>Descripción</th>
+                                    <th>Número de Serie</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rigging in riggings %}
+                                <tr>
+                                    <td>{{ rigging.date.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ rigging.rigger.username }}</td>
+                                    <td>{{ rigging.type_rigging.value }}</td>
+                                    <td>{{ rigging.description }}</td>
+                                    <td>{{ rigging.serial_numbers }}</td>
+                                    <td>
+                                        <a href="{{ url_for('edit_rigging', rigging_id=rigging.id) }}" class="btn btn-primary">Editar</a>
+                                        <form action="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" method="post" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este registro de rigging?');">
+                                            <input type="submit" value="Eliminar" class="btn btn-danger">
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <!-- Botón para regresar a la lista de componentes -->
+                        <a href="{{ url_for('view_components') }}">Volver a la lista</a>
+                        <a href="{{ url_for('rigging_add', component_id=component.id) }}" class="btn btn-primary">Añadir Rigging</a>
+                    </div>
+
+                    <p>Detalles del componente para ver.</p>
+                  </div>
+                  <!-- Pestaña Editar -->
+                  <div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">
+                    <!-- Contenido de Editar -->
+                    <p>Formulario de edición del componente.</p>
+                  </div>
+                </div>
+          </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+
