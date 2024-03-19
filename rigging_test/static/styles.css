@@ -1,5 +1,5 @@
 html, body {
-    background-color: #343940;
+    background-color: #292c31;
     font-family: Arial, sans-serif;
     height: 100%;
     margin: 0;
@@ -13,13 +13,13 @@ html, body {
 }
 
 .navbar h1 {
-    color: white;
+    color: #eeefef;
     text-align: left;
     margin: 0;
 }
 
 .container {
-    background-color: #575c66;  /* Un gris más claro que #343940 */
+    background-color: #40444d;  /* Un gris más claro que #343940 575c66 */
     width: 80%;  /* O el ancho que desees */
     padding: 20px;  /* Espaciado interno */
     margin: 50px auto 50px;  /* Margen superior e inferior */
@@ -54,5 +54,60 @@ html, body {
 .tabs li a:hover {
     background-color: #575c66; /* Color cuando se pasa el mouse por encima */
 }
+
+/* Estilos para la tabla */
+.full-width-table {
+    width: 100%; /* La tabla ocupa todo el ancho disponible */
+    border-collapse: collapse; /* Elimina el espacio entre las celdas */
+    background-color: #343940; /* Color de fondo para las celdas de la tabla */
+}
+
+.full-width-table th,
+.full-width-table td {
+    color: white; /* Texto blanco para las celdas */
+    padding: 10px; /* Espaciado interno en las celdas */
+    border-bottom: 2px solid white; /* Línea divisoria blanca entre filas */
+}
+
+/* Estilos para las pestañas, como ya los tienes */
+.tabs ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+.tabs li {
+    float: left;
+}
+
+.tabs li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.tabs li a:hover {
+    background-color: #575c66;
+}
+
+.header {
+    background-color: #343940; /* Color de fondo del encabezado */
+    height: 70px; /* Altura del encabezado */
+    line-height: 70px; /* Centrado vertical del texto en el encabezado */
+    color: white; /* Color del texto en el encabezado */
+    text-align: center; /* Alineación del texto */
+    font-size: 24px; /* Tamaño del texto */
+}
+
+.header-element {
+    padding: 10px 20px; /* Espaciado interno */
+    text-align: center; /* Alineación del texto */
+}
+
 
 

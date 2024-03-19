@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Components</title>
+</head>
+<body>
+    <h1>Components</h1>
+    <a href="{{ url_for('add_component') }}">Add New Component</a>
+    <ul>
+        {% for component in components %}
+            <li>{{ component.model.model }} - {{ component.serial_number }} - {{ component.component_type.component_type }} - {{ component.rig.rig_number }}
+                <a href="{{ url_for('edit_component', id=component.id) }}">Edit</a>
+                <form action="{{ url_for('delete_component', id=component.id) }}" method="post" style="display: inline;">
+                    <input type="submit" value="Delete">
+                </form>
+                <a href="{{ url_for('show_component', component_id=component.id) }}">View</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('index') }}">Back to Index</a>
+</body>
+</html>

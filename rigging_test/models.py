@@ -88,7 +88,7 @@ class Size(db.Model):
     components = db.relationship('Component', back_populates='sizes')
 
     def __repr__(self):
-        return f'<Size {self.size}>'
+        return f'{self.size}'
 
 class Status(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -120,7 +120,7 @@ class Model(db.Model):
                                    backref=db.backref('models', lazy=True, cascade="all, delete-orphan"))
 
     def __repr__(self):
-        return f'<Model {self.model}>'
+        return f'{self.model}'
 
 
 
@@ -161,7 +161,7 @@ class Rig(db.Model):
         return None
 
     def __repr__(self):
-        return f'<Rig {self.rig_number}>'
+        return f'{self.rig_number}'
 
 class RiggingType(Enum):
     INSPECTION_REPACK = "I+R"

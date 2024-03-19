@@ -212,9 +212,21 @@ def index():
 #####################       Component
 
 @app.route('/components')
-def view_components():
-    components = Component.query.all()
-    return render_template('view_components.html', components=components)
+@app.route('/components/<component_type>')
+def view_components(component_type=None):
+    is_aad = False  # Inicializa la variable is_aad
+    if component_type:
+        component_type = component_type.capitalize()
+        components = Component.query.join(ComponentType).filter(ComponentType.component_type == component_type).all()
+        title = f"{component_type}"
+        if component_type == "Aad":  # Comprueba si el tipo actual es AAD
+            is_aad = True
+    else:
+        components = Component.query.all()
+        title = "Todos los Componentes"
+
+    return render_template('view_components.html', components=components, title=title, is_aad=is_aad)
+
 
 @app.route('/component/show/<int:component_id>')
 @login_required
