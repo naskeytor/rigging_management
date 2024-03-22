@@ -29,6 +29,19 @@
         {% endblock %}
     </div>
 
+    <!-- Aquí se incluye el script de JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Agregar evento de clic a cada fila de la tabla
+            document.querySelectorAll('.full-width-table tbody tr').forEach(row => {
+                row.addEventListener('click', function() {
+                    // Muestra el modal
+                    $('#infoModal').modal('show');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
+
 
