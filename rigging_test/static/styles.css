@@ -60,6 +60,7 @@ html, body {
     width: 100%; /* La tabla ocupa todo el ancho disponible */
     border-collapse: collapse; /* Elimina el espacio entre las celdas */
     background-color: #343940; /* Color de fondo para las celdas de la tabla */
+    text-align: center;
 }
 
 .full-width-table th,
@@ -67,7 +68,14 @@ html, body {
     color: white; /* Texto blanco para las celdas */
     padding: 10px; /* Espaciado interno en las celdas */
     border-bottom: 2px solid white; /* Línea divisoria blanca entre filas */
+    cursor: pointer;
 }
+
+.full-width-table tbody tr:hover {
+    background-color: #575c66; /* Cambia el color según tu preferencia */
+    cursor: pointer; /* Cambia el cursor a una mano para indicar que es clickable */
+}
+
 
 /* Estilos para las pestañas, como ya los tienes */
 .tabs ul {
@@ -107,6 +115,14 @@ html, body {
 .header-element {
     padding: 10px 20px; /* Espaciado interno */
     text-align: center; /* Alineación del texto */
+}
+
+.modal-dialog {
+    max-width: 50%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - 60px);  /* Asegura una altura mínima y resta el margen superior e inferior */
 }
 
 

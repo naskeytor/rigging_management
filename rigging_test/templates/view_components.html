@@ -9,106 +9,83 @@
             {% if not is_aad %}<th>Size</th>{% endif %}
             <th>Dom</th>
             <th>Mounted On</th>
-            <th>Actions</th>
         </tr>
     </thead>
-    <tbody class="header-element">
+    <tbody>
         {% for component in components %}
-        <tr>
+        <tr data-toggle="modal" data-target="#componentModal-{{ component.id }}">
             <td>{{ component.serial_number | default('', true) }}</td>
             <td>{{ component.model | default('', true) }}</td>
             {% if not is_aad %}<td>{{ component.sizes.size | default('', true) }}</td>{% endif %}
             <td>{{ component.dom | default('', true) }}</td>
             <td>{{ component.rig.rig_number if component.rig else '' }}</td>
-            <td>
-                <!-- Botón que abre el modal -->
-                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#componentModal-{{ component.id }}">
-                    Ver detalles
-                </button>
-            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
-<!-- Modal estructura -->
 {% for component in components %}
 <div class="modal fade" id="componentModal-{{ component.id }}" tabindex="-1" role="dialog" aria-labelledby="componentModalLabel-{{ component.id }}" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="componentModalLabel-{{ component.id }}">Detalles del Componente</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+
             <div class="modal-body">
-        <!-- Pestañas -->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="view-tab" data-toggle="tab" data-target="#view" type="button" role="tab" aria-controls="view" aria-selected="true">Ver</button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="edit-tab" data-toggle="tab" data-target="#edit" type="button" role="tab" aria-controls="edit" aria-selected="false">Editar</button>
-                  </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" id="view-tab" data-toggle="tab" href="#view{{ component.id }}" role="tab" aria-controls="view" aria-selected="true">View</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="edit-tab" data-toggle="tab" href="#edit{{ component.id }}" role="tab" aria-controls="edit" aria-selected="false">Edit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="rigging-tab" data-toggle="tab" href="#rigging{{ component.id }}" role="tab" aria-controls="rigging" aria-selected="false">Rigging</a>
+                    </li>
                 </ul>
 
-        <!-- Contenido de las pestañas -->
                 <div class="tab-content" id="myTabContent">
-                  <!-- Pestaña Ver -->
-                  <div class="tab-pane fade show active" id="view" role="tabpanel" aria-labelledby="view-tab">
-                    <!-- Contenido de Ver -->
-
-                      <div class="container">
-                        <h2>Detalle del Componente</h2>
+                    <div class="tab-pane fade show active" id="view{{ component.id }}" role="tabpanel" aria-labelledby="view-tab">
+                        <!-- Contenido de la pestaña View -->
                         <p><strong>ID:</strong> {{ component.id }}</p>
                         <p><strong>Tipo:</strong> {{ component.component_type.component_type }}</p>
                         <p><strong>Número de Serie:</strong> {{ component.serial_number }}</p>
                         <p><strong>Fecha de Manufactura:</strong> {{ component.dom }}</p>
-
+                    </div>
+                    <div class="tab-pane fade" id="edit{{ component.id }}" role="tabpanel" aria-labelledby="edit-tab">
+                        <!-- Contenido de la pestaña Edit -->
+                        <p>Formulario de edición del componente.</p>
+                    </div>
+                    <div class="tab-pane fade" id="rigging{{ component.id }}" role="tabpanel" aria-labelledby="rigging-tab">
                         <h3>Registros de Rigging</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Fecha</th>
-                                    <th>Rigger</th>
-                                    <th>Descripción</th>
-                                    <th>Número de Serie</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for rigging in riggings %}
-                                <tr>
-                                    <td>{{ rigging.date.strftime('%Y-%m-%d') }}</td>
-                                    <td>{{ rigging.rigger.username }}</td>
-                                    <td>{{ rigging.type_rigging.value }}</td>
-                                    <td>{{ rigging.description }}</td>
-                                    <td>{{ rigging.serial_numbers }}</td>
-                                    <td>
-                                        <a href="{{ url_for('edit_rigging', rigging_id=rigging.id) }}" class="btn btn-primary">Editar</a>
-                                        <form action="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" method="post" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este registro de rigging?');">
-                                            <input type="submit" value="Eliminar" class="btn btn-danger">
-                                        </form>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-
-                        <!-- Botón para regresar a la lista de componentes -->
-                        <a href="{{ url_for('view_components') }}">Volver a la lista</a>
-                        <a href="{{ url_for('rigging_add', component_id=component.id) }}" class="btn btn-primary">Añadir Rigging</a>
+                        <div class="list-group">
+                            <div class="list-group-item list-group-item-action active">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Fecha</h5>
+                                    <small>Rigger</small>
+                                    <small>Descripción</small>
+                                    <small>Número de Serie</small>
+                                    <small>Acciones</small>
+                                </div>
+                            </div>
+                            {% for rigging in component.riggings %}
+                            <div class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ rigging.date.strftime('%Y-%m-%d') }}</h5>
+                                    <small>{{ rigging.rigger.username }}</small>
+                                    <small>{{ rigging.description }}</small>
+                                    <small>{{ rigging.serial_numbers }}</small>
+                                    <small>
+                                        <a href="{{ url_for('edit_rigging', rigging_id=rigging.id) }}" class="btn btn-primary btn-sm">Editar</a>
+                                        <a href="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar este registro de rigging?');">Eliminar</a>
+                                    </small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
 
-                    <p>Detalles del componente para ver.</p>
-                  </div>
-                  <!-- Pestaña Editar -->
-                  <div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">
-                    <!-- Contenido de Editar -->
-                    <p>Formulario de edición del componente.</p>
-                  </div>
+
                 </div>
-          </div>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
@@ -116,6 +93,6 @@
     </div>
 </div>
 {% endfor %}
-{% endblock %}
 
+{% endblock %}
 
