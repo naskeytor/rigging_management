@@ -214,6 +214,11 @@ def index():
 @app.route('/components')
 @app.route('/components/<component_type>')
 def view_components(component_type=None):
+    #component = Component.query.get_or_404(id)
+    component_types = ComponentType.query.all()  # Fetch all component types
+    component_sizes = Size.query.all()  # Fetch all sizes
+    component_statuses = Status.query.all()  # Fetch all statuses
+    component_models = Model.query.all()
     is_aad = False  # Inicializa la variable is_aad
     if component_type:
         component_type = component_type.capitalize()
@@ -225,7 +230,9 @@ def view_components(component_type=None):
         components = Component.query.all()
         title = "Todos los Componentes"
 
-    return render_template('view_components.html', components=components, title=title, is_aad=is_aad)
+    return render_template('view_components.html', components=components, title=title, is_aad=is_aad,
+                           component_types=component_types, component_sizes=component_sizes,
+                           component_statuses=component_statuses, component_models=component_models)
 
 
 @app.route('/component/show/<int:component_id>')
@@ -276,6 +283,7 @@ def add_component():
 @app.route('/component/edit/<int:id>', methods=['GET', 'POST'])
 def edit_component(id):
     component = Component.query.get_or_404(id)
+    component_id = request.form.get('component_id')
     component_types = ComponentType.query.all()  # Fetch all component types
     component_sizes = Size.query.all()  # Fetch all sizes
     component_statuses = Status.query.all()  # Fetch all statuses
@@ -290,9 +298,10 @@ def edit_component(id):
         component.size_id = request.form.get('size_id', None)
         component.status_id = request.form.get('status_id', None)
         component.model_id = request.form.get('model_id', None)
+        component_type = component.component_type.component_type
 
         db.session.commit()
-        return redirect(url_for('view_components'))
+        return redirect(url_for('view_components', component_type=component_type))
 
     return render_template('edit_component.html',
                            component=component,

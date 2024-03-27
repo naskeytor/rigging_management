@@ -60,6 +60,7 @@ class Component(db.Model):
     #sizes = db.relationship('Size', backref='related_components')
     sizes = db.relationship('Size', back_populates='components')
     status_id = db.Column(db.Integer, db.ForeignKey('status.id'), nullable=True)
+    component_status = db.relationship('Status', back_populates='components')
 
     # La relación con Rig se maneja a través de la tabla de asociación en el modelo Rig
     # Eliminada la relación directa rig_id y la relación backref de Rig a Component
@@ -98,7 +99,7 @@ class Status(db.Model):
     components = db.relationship('Component', backref='status', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f'<Status {self.status}>'
+        return f'{self.status}'
 
 
 class ComponentType(db.Model):

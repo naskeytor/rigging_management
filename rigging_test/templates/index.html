@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rigging Management</title>
+    <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Estilos personalizados -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</head>
 <body>
     <div class="navbar">
         <h1>Rigging Management</h1>
@@ -29,6 +28,9 @@
         {% endblock %}
     </div>
 
+
+
+
     <!-- Aquí se incluye el script de JavaScript -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -41,6 +43,16 @@
             });
         });
     </script>
+
+    {% block scripts %}{% endblock %}
+
+
+
+    <!-- jQuery y Popper.js (necesarios para Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>
 

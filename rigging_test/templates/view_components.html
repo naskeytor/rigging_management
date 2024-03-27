@@ -9,6 +9,7 @@
             {% if not is_aad %}<th>Size</th>{% endif %}
             <th>Dom</th>
             <th>Mounted On</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
@@ -19,6 +20,7 @@
             {% if not is_aad %}<td>{{ component.sizes.size | default('', true) }}</td>{% endif %}
             <td>{{ component.dom | default('', true) }}</td>
             <td>{{ component.rig.rig_number if component.rig else '' }}</td>
+            <td>{{ component.component_status | default('', true) }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -28,62 +30,66 @@
 <div class="modal fade" id="componentModal-{{ component.id }}" tabindex="-1" role="dialog" aria-labelledby="componentModalLabel-{{ component.id }}" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-
             <div class="modal-body">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="view-tab" data-toggle="tab" href="#view{{ component.id }}" role="tab" aria-controls="view" aria-selected="true">View</a>
+                        <a class="nav-link active" id="view-tab-{{ component.id }}" data-toggle="tab" href="#view{{ component.id }}" role="tab" aria-controls="view" aria-selected="true">View</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="edit-tab" data-toggle="tab" href="#edit{{ component.id }}" role="tab" aria-controls="edit" aria-selected="false">Edit</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="rigging-tab" data-toggle="tab" href="#rigging{{ component.id }}" role="tab" aria-controls="rigging" aria-selected="false">Rigging</a>
+                        <a class="nav-link" id="edit-tab-{{ component.id }}" data-toggle="tab" href="#edit{{ component.id }}" role="tab" aria-controls="edit" aria-selected="false">Edit</a>
                     </li>
                 </ul>
-
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="view{{ component.id }}" role="tabpanel" aria-labelledby="view-tab">
-                        <!-- Contenido de la pestaña View -->
+                <div class="tab-content" id="myTabContent-{{ component.id }}">
+                    <div class="tab-pane fade show active" id="view{{ component.id }}" role="tabpanel" aria-labelledby="view-tab-{{ component.id }}">
                         <p><strong>ID:</strong> {{ component.id }}</p>
-                        <p><strong>Tipo:</strong> {{ component.component_type.component_type }}</p>
-                        <p><strong>Número de Serie:</strong> {{ component.serial_number }}</p>
-                        <p><strong>Fecha de Manufactura:</strong> {{ component.dom }}</p>
+                        <p><strong>Model:</strong> {{ component.model }}</p>
+                        {% if not is_aad %}<p><strong>Size:</strong> {{ component.sizes.size }}</p>{% endif %}
+                        <p><strong>DOM:</strong> {{ component.dom }}</p>
+                        <p><strong>Mounted On:</strong> {{ component.rig.rig_number if component.rig else '' }}</p>
+                        <p><strong>DOM:</strong> {{ component.component_status }}</p>
                     </div>
-                    <div class="tab-pane fade" id="edit{{ component.id }}" role="tabpanel" aria-labelledby="edit-tab">
-                        <!-- Contenido de la pestaña Edit -->
-                        <p>Formulario de edición del componente.</p>
-                    </div>
-                    <div class="tab-pane fade" id="rigging{{ component.id }}" role="tabpanel" aria-labelledby="rigging-tab">
-                        <h3>Registros de Rigging</h3>
-                        <div class="list-group">
-                            <div class="list-group-item list-group-item-action active">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h5 class="mb-1">Fecha</h5>
-                                    <small>Rigger</small>
-                                    <small>Descripción</small>
-                                    <small>Número de Serie</small>
-                                    <small>Acciones</small>
-                                </div>
-                            </div>
-                            {% for rigging in component.riggings %}
-                            <div class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h5 class="mb-1">{{ rigging.date.strftime('%Y-%m-%d') }}</h5>
-                                    <small>{{ rigging.rigger.username }}</small>
-                                    <small>{{ rigging.description }}</small>
-                                    <small>{{ rigging.serial_numbers }}</small>
-                                    <small>
-                                        <a href="{{ url_for('edit_rigging', rigging_id=rigging.id) }}" class="btn btn-primary btn-sm">Editar</a>
-                                        <a href="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar este registro de rigging?');">Eliminar</a>
-                                    </small>
-                                </div>
-                            </div>
+                    <div class="tab-pane fade" id="edit{{ component.id }}" role="tabpanel" aria-labelledby="edit-tab-{{ component.id }}">
+                        <h3>Editar Componente</h3>
+                        <!-- Formulario de edición -->
+                        <form action="{{ url_for('edit_component', id=component.id) }}" method="post">
+                        Component Type:
+                        <select name="component_type_id" required>
+                            {% for type in component_types %}
+                                <option value="{{ type.id }}" {% if type.id == component.component_type_id %} selected {% endif %}>
+                                    {{ type.component_type }}
+                                </option>
                             {% endfor %}
-                        </div>
+                        </select><br>
+                        Serial Number: <input type="text" name="serial_number" value="{{ component.serial_number }}" required><br>
+                        Date of Manufacture: <input type="date" name="dom" value="{{ component.dom.isoformat() }}"><br>
+                        Size:
+                        <select name="size_id" required>
+                            {% for size in component_sizes %}
+                                <option value="{{ size.id }}" {% if size.id == component.size_id %} selected {% endif %}>
+                                    {{ size.size }}
+                                </option>
+                            {% endfor %}
+                        </select><br>
+                        Status:
+                        <select name="status_id" required>
+                            {% for status in component_statuses %}
+                                <option value="{{ status.id }}" {% if status.id == component.status_id %} selected {% endif %}>
+                                    {{ status.status }}
+                                </option>
+                            {% endfor %}
+                        </select><br>
+                        Model:
+                        <select name="model_id" required>
+                            {% for model in component_models %}
+                                <option value="{{ model.id }}" {% if model.id == component.model_id %} selected {% endif %}>
+                                    {{ model.model }}
+                                </option>
+                            {% endfor %}
+                        </select><br>
+
+                        <input type="submit" value="Update Component">
+                    </form>
                     </div>
-
-
                 </div>
             </div>
             <div class="modal-footer">
@@ -93,6 +99,5 @@
     </div>
 </div>
 {% endfor %}
-
 {% endblock %}
 
