@@ -219,6 +219,8 @@ def view_components(component_type=None):
     component_sizes = Size.query.all()  # Fetch all sizes
     component_statuses = Status.query.all()  # Fetch all statuses
     component_models = Model.query.all()
+    type_rigging = RiggingType.query.all()
+
     is_aad = False  # Inicializa la variable is_aad
     if component_type:
         component_type = component_type.capitalize()
@@ -232,7 +234,8 @@ def view_components(component_type=None):
 
     return render_template('view_components.html', components=components, title=title, is_aad=is_aad,
                            component_types=component_types, component_sizes=component_sizes,
-                           component_statuses=component_statuses, component_models=component_models)
+                           component_statuses=component_statuses, component_models=component_models,
+                           type_rigging=type_rigging)
 
 
 @app.route('/component/show/<int:component_id>')
@@ -623,7 +626,7 @@ def edit_rig(rig_id):
         available_canopies, available_containers, available_reserves, available_aads = prepare_component_data()
         return render_template('edit_rig.html', available_canopies=available_canopies,
                                available_containers=available_containers, available_reserves=available_reserves,
-                               available_aads=available_aads, rig=rig)
+                               available_aads=available_aads, rig=rig, _anchor='riggingTab')
 
 @app.route('/rigging')
 def list_rigging():
@@ -637,24 +640,22 @@ def list_rigging():
 def rigging_add(component_id=None):
     if request.method == 'POST':
         date = request.form.get('date')
-        type_rigging = request.form.get('type_rigging')
+        type_rigging_id = request.form.get('type_rigging')  # Obtienes el ID
+        type_rigging = RiggingType.query.get(type_rigging_id)  # Conviertes el ID a la instancia de RiggingType
         selected_value = request.form.get('serial_numbers')
         serial_numbers = ''
 
         rig_id = None
         component_id = component_id or None
 
-        # Si ya se proporciona el ID del componente, úsalo directamente
         if component_id:
             component = Component.query.get(int(component_id))
             if component:
                 serial_numbers = component.serial_number
                 component_id = component.id
         else:
-            # Extrae el tipo y el ID del valor seleccionado
             selection_type, selection_id = selected_value.split('-')
 
-            # Determina si el valor seleccionado pertenece a un Component o a un Rig
             if selection_type == "Component":
                 component = Component.query.get(int(selection_id))
                 serial_numbers = component.serial_number
@@ -666,10 +667,8 @@ def rigging_add(component_id=None):
                 if rig:
                     rig_id = rig.id
 
-        # Determina el rigger_id basado en los roles del usuario actual
         rigger_id = current_user.id if 'rigger' in [role.name for role in current_user.roles] else None
 
-        # Crea y guarda el nuevo registro de Rigging si se encontró un componente o rig válido
         if rig_id or component_id:
             new_rigging = Rigging(date=date, serial_numbers=serial_numbers, rig_id=rig_id,
                                   component_id=component_id, rigger_id=rigger_id, type_rigging=type_rigging)
@@ -683,8 +682,10 @@ def rigging_add(component_id=None):
 
     components = Component.query.all() if not component_id else [Component.query.get(int(component_id))]
     rigs = Rig.query.all()
+    rigging_types = RiggingType.query.all()  # Obtienes todos los tipos de rigging
     return render_template('add_rigging.html', components=components, rigs=rigs,
-                           preselected_component_id=component_id)
+                           rigging_types=rigging_types, preselected_component_id=component_id)
+
 
 
 @app.route('/rigging/edit/<int:rigging_id>', methods=['GET', 'POST'])
@@ -694,7 +695,7 @@ def edit_rigging(rigging_id):
 
     if request.method == 'POST':
         date = request.form.get('date')
-        type_rigging = request.form.get('type_rigging')
+        type_rigging_id = request.form.get('type_rigging')
         description = request.form.get('description')
         selected_value = request.form.get('serial_numbers')
 
@@ -716,19 +717,25 @@ def edit_rigging(rigging_id):
                     rig_id = rig.id
 
         rigging.date = date
-        rigging.type_rigging = RiggingType[type_rigging] if type_rigging in RiggingType.__members__ else None
+        #rigging.type_rigging = RiggingType[type_rigging] if type_rigging in RiggingType.__members__ else None
+        rigging_type = RiggingType.query.get(int(type_rigging_id))
+        if rigging_type:
+            rigging.type_rigging = rigging_type  # Asignar la instancia, no el ID
+
         rigging.description = description
         rigging.component_id = component_id
         rigging.rig_id = rig_id
 
         db.session.commit()
         flash('Rigging actualizado correctamente.', 'success')
-        return redirect(url_for('list_rigging'))
+        return redirect(url_for('view_components', _anchor='riggingTab'))
 
     components = Component.query.all()
     rigs = Rig.query.all()
+    type_rigging = RiggingType.query.all()
+
     return render_template('edit_rigging.html', rigging=rigging, components=components,
-                           rigs=rigs, RiggingType=RiggingType)
+                           rigs=rigs, type_rigging=type_rigging)
 
 
 

@@ -9,49 +9,61 @@
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 <body>
-    <div class="navbar">
-        <h1>Rigging Management</h1>
-    </div>
+<div class="navbar">
+    <h1>Rigging Management</h1>
+</div>
 
-    <div class="container">
-        <div class="tabs">
-            <ul>
-                <li><a href="/rigs">Rigs</a></li>
-                <li><a href="/components/Canopy">Canopies</a></li>
-                <li><a href="/components/Container">Containers</a></li>
-                <li><a href="/components/Reserve">Reserves</a></li>
-                <li><a href="/components/Aad">AAD</a></li>
-            </ul>
-        </div>
-        {% block content %}
+<div class="container">
+    <div class="tabs">
+        <ul>
+            <li><a href="/rigs">Rigs</a></li>
+            <li><a href="/components/Canopy">Canopies</a></li>
+            <li><a href="/components/Container">Containers</a></li>
+            <li><a href="/components/Reserve">Reserves</a></li>
+            <li><a href="/components/Aad">AAD</a></li>
+        </ul>
+    </div>
+    {% block content %}
         <!-- El contenido específico de cada página se insertará aquí -->
-        {% endblock %}
-    </div>
+    {% endblock %}
+</div>
 
 
-
-
-    <!-- Aquí se incluye el script de JavaScript -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Agregar evento de clic a cada fila de la tabla
-            document.querySelectorAll('.full-width-table tbody tr').forEach(row => {
-                row.addEventListener('click', function() {
-                    // Muestra el modal
-                    $('#infoModal').modal('show');
-                });
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Agregar evento de clic a cada fila de la tabla
+        document.querySelectorAll('.full-width-table tbody tr').forEach(row => {
+            row.addEventListener('click', function () {
+                // Redirige a la página del componente
+                const componentId = row.getAttribute('data-id');
+                window.location.href = `/component/show/${componentId}`;
             });
         });
-    </script>
-
-    {% block scripts %}{% endblock %}
-
+    });
+</script>
 
 
-    <!-- jQuery y Popper.js (necesarios para Bootstrap) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Aquí se incluye el script de JavaScript -->
+<!--<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Agregar evento de clic a cada fila de la tabla
+        document.querySelectorAll('.full-width-table tbody tr').forEach(row => {
+            row.addEventListener('click', function() {
+                // Muestra el modal
+                $('#infoModal').modal('show');
+            });
+        });
+    });
+</script>-->
+
+
+
+
+
+<!-- jQuery y Popper.js (necesarios para Bootstrap) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>

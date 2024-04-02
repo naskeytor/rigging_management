@@ -50,7 +50,6 @@ class Component(db.Model):
     component_type_id = db.Column(db.Integer, db.ForeignKey('component_type.id'), nullable=False)
     component_type = db.relationship('ComponentType', back_populates='components')
 
-
     model_id = db.Column(db.Integer, db.ForeignKey('model.id'), nullable=True)  # Nueva clave foránea
     model = db.relationship('Model', backref='components')
 
@@ -60,10 +59,7 @@ class Component(db.Model):
     #sizes = db.relationship('Size', backref='related_components')
     sizes = db.relationship('Size', back_populates='components')
     status_id = db.Column(db.Integer, db.ForeignKey('status.id'), nullable=True)
-    component_status = db.relationship('Status', back_populates='components')
 
-    # La relación con Rig se maneja a través de la tabla de asociación en el modelo Rig
-    # Eliminada la relación directa rig_id y la relación backref de Rig a Component
     rigs = db.relationship('Rig', secondary=rig_component_association, back_populates="components")
 
     rig = db.relationship('Rig', backref=db.backref('direct_components', lazy='dynamic', cascade="all, delete-orphan"))
@@ -164,11 +160,11 @@ class Rig(db.Model):
     def __repr__(self):
         return f'{self.rig_number}'
 
-class RiggingType(Enum):
-    INSPECTION_REPACK = "I+R"
-    REPARATION = "Reparation"
-    ALTERATION = "Alteration"
-    FABRICATION = "Fabrication"
+class RiggingType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.String(255))
+
 
 class Rigging(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -184,8 +180,9 @@ class Rigging(db.Model):
     component_id = db.Column(db.Integer, db.ForeignKey('component.id'), nullable=True)
     component = db.relationship('Component', backref='riggings')
 
-    type_rigging = db.Column(db.Enum(RiggingType), nullable=False)
-
+    #type_rigging = db.Column(db.Enum(RiggingType), nullable=False)
+    type_rigging_id = db.Column(db.Integer, db.ForeignKey('rigging_type.id'), nullable=False)
+    type_rigging = db.relationship('RiggingType', backref='riggings')
     def __repr__(self):
         return f'<Rigging {self.id} on {self.date}>'
 
