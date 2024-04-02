@@ -2,7 +2,17 @@
 
 {% block content %}
     <div class="container mt-4" style="color: white;">
-        <h2>Detalles del Componente: {{ component.serial_number }}</h2>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>{{ component.serial_number }}</h2>
+            <div>
+                <!-- Botón para editar -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editComponentModal">
+                    Editar
+                </button>
+                <!-- Botón para eliminar -->
+                <button type="button" class="btn btn-danger">Eliminar</button>
+            </div>
+        </div>
         <table class="table table-bordered" style="color: white;">
             <tbody>
             <tr>
@@ -30,7 +40,12 @@
         </table>
 
 
-        <h3>Registros de Rigging</h3>
+        <div class="d-flex justify-content-between align-items-center">
+            <h3>Registros de Rigging</h3>
+            <!-- Botón para añadir un nuevo registro de rigging -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addRiggingModal">Añadir
+            </button>
+        </div>
         {% if riggings %}
             <table class="table table-striped" style="color: white;">
                 <thead>
@@ -48,12 +63,84 @@
                         <td>{{ rigging.rigger if component.dom else '' }}</td>
                         <td>{{ rigging.type_rigging.name if rigging.type_rigging else '' }}</td>
                         <td>{{ rigging.description | default('') }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#editRiggingModal-{{ rigging.id }}">Editar
+                            </button>
+                            <button type="button" class="btn btn-danger">Eliminar</button>
+                        </td>
                     </tr>
+                    <div class="modal fade" id="editRiggingModal-{{ rigging.id }}" tabindex="-1" role="dialog"
+                         aria-labelledby="editRiggingModalLabel-{{ rigging.id }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editRiggingModalLabel-{{ rigging.id }}">Editar Registro
+                                        de Rigging</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Contenido del modal para editar rigging -->
+                                    <p>Contenido del modal para editar el registro de rigging.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    <button type="button" class="btn btn-primary">Guardar Cambios</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endfor %}
                 </tbody>
             </table>
         {% else %}
             <p>No hay registros de rigging asociados a este componente.</p>
         {% endif %}
+    </div>
+    <!-- Modal para editar -->
+    <div class="modal fade" id="editComponentModal" tabindex="-1" role="dialog"
+         aria-labelledby="editComponentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editComponentModalLabel">Editar Componente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenido del modal para editar -->
+                    <p>Contenido del modal para editar el componente.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal para añadir rigging -->
+    <div class="modal fade" id="addRiggingModal" tabindex="-1" role="dialog" aria-labelledby="addRiggingModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRiggingModalLabel">Añadir Registro de Rigging</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenido del modal para añadir rigging -->
+                    <p>Contenido del modal para añadir un nuevo registro de rigging.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Guardar Registro</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
