@@ -5,47 +5,45 @@
     <title>Editar Rigging</title>
 </head>
 <body>
-    <h1>Editar Rigging</h1>
-    <form method="post">
-        <label for="date">Fecha:</label>
-        <input type="date" name="date" id="date" value="{{ rigging.date.strftime('%Y-%m-%d') }}" required>
-        <br>
+<h1>Editar Rigging</h1>
+<form method="post">
+    <label for="date">Fecha:</label>
+    <input type="date" name="date" id="date" value="{{ rigging.date.strftime('%Y-%m-%d') }}" required>
+    <br>
 
-        <label for="type_rigging">Tipo de Rigging:</label>
-        <select name="type_rigging" id="type_rigging" required>
-            {% for type in RiggingType %}
-            <option value="{{ type.name }}" {% if rigging.type_rigging.name == type.name %}selected{% endif %}>
-                {{ type.value }}
-            </option>
+    <select name="type_rigging" id="type_rigging-{{ rigging.id }}" required>
+        {% for type in type_rigging %}
+            <option value="{{ type.id }}">{{ type.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="serial_numbers">Seleccionar número de serie:</label>
+
+    <select id="serial_numbers" name="serial_numbers" required>
+        <optgroup label="Componentes">
+            {% for component in components %}
+                <option value="Component-{{ component.id }}"
+                        {% if rigging.component_id == component.id %}selected{% endif %}>
+                    {{ component.serial_number }}
+                </option>
             {% endfor %}
-        </select>
+        </optgroup>
+        <optgroup label="Rigs">
+            {% for rig in rigs %}
+                <option value="Rig-{{ rig.id }}" {% if rigging.rig_id == rig.id %}selected{% endif %}>
+                    {{ rig.rig_number }}
+                </option>
+            {% endfor %}
+        </optgroup>
+    </select>
+    <br>
 
-        <label for="serial_numbers">Seleccionar número de serie:</label>
+    <label for="description">Descripción:</label>
+    <textarea name="description" id="description">{{ rigging.description }}</textarea>
+    <br>
 
-        <select id="serial_numbers" name="serial_numbers" required>
-            <optgroup label="Componentes">
-                {% for component in components %}
-                    <option value="Component-{{ component.id }}" {% if rigging.component_id == component.id %}selected{% endif %}>
-                        {{ component.serial_number }}
-                    </option>
-                {% endfor %}
-            </optgroup>
-            <optgroup label="Rigs">
-                {% for rig in rigs %}
-                    <option value="Rig-{{ rig.id }}" {% if rigging.rig_id == rig.id %}selected{% endif %}>
-                        {{ rig.rig_number }}
-                    </option>
-                {% endfor %}
-            </optgroup>
-        </select>
-        <br>
-
-        <label for="description">Descripción:</label>
-        <textarea name="description" id="description">{{ rigging.description }}</textarea>
-        <br>
-
-        <input type="submit" value="Actualizar Rigging">
-    </form>
-    <a href="{{ url_for('list_rigging') }}">Volver</a>
+    <input type="submit" value="Actualizar Rigging">
+</form>
+<a href="{{ url_for('list_rigging') }}">Volver</a>
 </body>
 </html>

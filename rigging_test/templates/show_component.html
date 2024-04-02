@@ -1,52 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle del Componente</title>
-</head>
-<body>
-    <div class="container">
-        <h2>Detalle del Componente</h2>
-        <p><strong>ID:</strong> {{ component.id }}</p>
-        <p><strong>Tipo:</strong> {{ component.component_type.component_type }}</p>
-        <p><strong>Número de Serie:</strong> {{ component.serial_number }}</p>
-        <p><strong>Fecha de Manufactura:</strong> {{ component.dom }}</p>
-        <!-- Agrega aquí más detalles según los campos de tu modelo Component -->
+{% extends 'index.html' %}
 
-        <h3>Registros de Rigging</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Fecha</th>
-                    <th>Rigger</th>
-                    <th>Descripción</th>
-                    <th>Número de Serie</th>
-                </tr>
-            </thead>
+{% block content %}
+    <div class="container mt-4" style="color: white;">
+        <h2>Detalles del Componente: {{ component.serial_number }}</h2>
+        <table class="table table-bordered" style="color: white;">
             <tbody>
-                {% for rigging in riggings %}
-                <tr>
-                    <td>{{ rigging.date.strftime('%Y-%m-%d') }}</td>
-                    <td>{{ rigging.rigger.username }}</td>
-                    <td>{{ rigging.type_rigging.value }}</td>
-                    <td>{{ rigging.description }}</td>
-                    <td>{{ rigging.serial_numbers }}</td>
-                    <td>
-                        <a href="{{ url_for('edit_rigging', rigging_id=rigging.id) }}" class="btn btn-primary">Editar</a>
-                        <form action="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" method="post" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este registro de rigging?');">
-                            <input type="submit" value="Eliminar" class="btn btn-danger">
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
+            <tr>
+                <th>Serial Number</th>
+                <td>{{ component.serial_number }}</td>
+            </tr>
+            <tr>
+                <th>Modelo</th>
+                <td>{{ component.model | default('') }}</td>
+            </tr>
+            <tr>
+                <th>DOM</th>
+                <td>{{ component.dom.strftime('%Y-%m-%d') if component.dom else '' }}</td>
+            </tr>
+            <tr>
+                <th>Estado</th>
+                <td>{{ component.component_status | default('') }}</td>
+            </tr>
+            <tr>
+                <th>Montedo en</th>
+                <td>{{ component.rig.rig_number if component.rig else '' }}</td>
+            </tr>
+            <!-- Agrega más filas según sea necesario para otros atributos del componente -->
             </tbody>
         </table>
 
 
-        <!-- Botón para regresar a la lista de componentes -->
-        <a href="{{ url_for('view_components') }}">Volver a la lista</a>
-        <a href="{{ url_for('rigging_add', component_id=component.id) }}" class="btn btn-primary">Añadir Rigging</a>
+        <h3>Registros de Rigging</h3>
+        {% if riggings %}
+            <table class="table table-striped" style="color: white;">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Rigger</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rigging in riggings %}
+                    <tr>
+                        <td>{{ rigging.date if rigging.date else '' }}</td>
+                        <td>{{ rigging.rigger if component.dom else '' }}</td>
+                        <td>{{ rigging.type_rigging.name if rigging.type_rigging else '' }}</td>
+                        <td>{{ rigging.description | default('') }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No hay registros de rigging asociados a este componente.</p>
+        {% endif %}
     </div>
-</body>
-</html>
+{% endblock %}
