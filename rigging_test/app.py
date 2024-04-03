@@ -242,9 +242,16 @@ def view_components(component_type=None):
 @login_required
 def show_component(component_id):
     component = Component.query.get_or_404(component_id)
+    component_types = ComponentType.query.all()  # Fetch all component types
+    component_sizes = Size.query.all()  # Fetch all sizes
+    component_statuses = Status.query.all()  # Fetch all statuses
+    component_models = Model.query.all()
+    type_rigging = RiggingType.query.all()
     # Obtener los registros de Rigging asociados a este componente
     riggings = Rigging.query.filter_by(component_id=component.id).order_by(Rigging.date.desc()).all()
-    return render_template('show_component.html', component=component, riggings=riggings)
+    return render_template('show_component.html', component=component, riggings=riggings,
+                           component_types=component_types, component_sizes=component_sizes,
+                           component_statuses=component_statuses, component_models=component_models)
 
 
 
@@ -271,7 +278,7 @@ def add_component():
 
         db.session.add(new_component)
         db.session.commit()
-        message = "New component added successfully."
+        return redirect(url_for('view_components'))
     component_types = ComponentType.query.all()
     component_sizes = Size.query.all()
     component_statuses = Status.query.all()
@@ -280,8 +287,7 @@ def add_component():
                             component_types=component_types,
                             component_sizes=component_sizes,
                             component_statuses=component_statuses,
-                            component_models=component_models,
-                            message=message)
+                            component_models=component_models)
 
 @app.route('/component/edit/<int:id>', methods=['GET', 'POST'])
 def edit_component(id):

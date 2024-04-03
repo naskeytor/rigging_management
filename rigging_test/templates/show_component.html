@@ -2,7 +2,20 @@
 
 {% block content %}
     <div class="container mt-4" style="color: white;">
-        <h2>Detalles del Componente: {{ component.serial_number }}</h2>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>{{ component.serial_number }}</h2>
+            <div>
+                <!-- Botón para editar -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editComponentModal">
+                    Editar
+                </button>
+                <!-- Botón para eliminar -->
+                <form action="{{ url_for('delete_component', id=component.id) }}" method="post"
+                      style="display: inline;">
+                    <input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Sure?')">
+                </form>
+            </div>
+        </div>
         <table class="table table-bordered" style="color: white;">
             <tbody>
             <tr>
@@ -30,7 +43,12 @@
         </table>
 
 
-        <h3>Registros de Rigging</h3>
+        <div class="d-flex justify-content-between align-items-center">
+            <h3>Registros de Rigging</h3>
+            <!-- Botón para añadir un nuevo registro de rigging -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addRiggingModal">Añadir
+            </button>
+        </div>
         {% if riggings %}
             <table class="table table-striped" style="color: white;">
                 <thead>
@@ -48,12 +66,121 @@
                         <td>{{ rigging.rigger if component.dom else '' }}</td>
                         <td>{{ rigging.type_rigging.name if rigging.type_rigging else '' }}</td>
                         <td>{{ rigging.description | default('') }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#editRiggingModal-{{ rigging.id }}">Editar
+                            </button>
+                            <button type="button" class="btn btn-danger">Eliminar</button>
+                        </td>
                     </tr>
+                    <div class="modal fade" id="editRiggingModal-{{ rigging.id }}" tabindex="-1" role="dialog"
+                         aria-labelledby="editRiggingModalLabel-{{ rigging.id }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editRiggingModalLabel-{{ rigging.id }}">Editar Registro
+                                        de Rigging</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Contenido del modal para editar rigging -->
+                                    <p>Contenido del modal para editar el registro de rigging.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    <button type="button" class="btn btn-primary">Guardar Cambios</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endfor %}
                 </tbody>
             </table>
         {% else %}
             <p>No hay registros de rigging asociados a este componente.</p>
         {% endif %}
+    </div>
+    <!-- Modal para editar -->
+    <div class="modal fade" id="editComponentModal" tabindex="-1" role="dialog"
+         aria-labelledby="editComponentModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editComponentModalLabel">Editar Componente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ url_for('edit_component', id=component.id) }}" method="post">
+                    Component Type:
+                    <select name="component_type_id" required>
+                        {% for type in component_types %}
+                            <option value="{{ type.id }}" {% if type.id == component.component_type_id %}
+                                    selected {% endif %}>
+                                {{ type.component_type }}
+                            </option>
+                        {% endfor %}
+                    </select><br>
+                    Serial Number: <input type="text" name="serial_number" value="{{ component.serial_number }}"
+                                          required><br>
+                    Date of Manufacture: <input type="date" name="dom" value="{{ component.dom.isoformat() }}"><br>
+                    Size:
+                    <select name="size_id" required>
+                        {% for size in component_sizes %}
+                            <option value="{{ size.id }}" {% if size.id == component.size_id %} selected {% endif %}>
+                                {{ size.size }}
+                            </option>
+                        {% endfor %}
+                    </select><br>
+                    Status:
+                    <select name="status_id" required>
+                        {% for status in component_statuses %}
+                            <option value="{{ status.id }}" {% if status.id == component.status_id %}
+                                    selected {% endif %}>
+                                {{ status.status }}
+                            </option>
+                        {% endfor %}
+                    </select><br>
+                    Model:
+                    <select name="model_id" required>
+                        {% for model in component_models %}
+                            <option value="{{ model.id }}" {% if model.id == component.model_id %} selected {% endif %}>
+                                {{ model.model }}
+                            </option>
+                        {% endfor %}
+                    </select><br>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Registro</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para añadir rigging -->
+    <div class="modal fade" id="addRiggingModal" tabindex="-1" role="dialog" aria-labelledby="addRiggingModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRiggingModalLabel">Añadir Registro de Rigging</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenido del modal para añadir rigging -->
+                    <p>Contenido del modal para añadir un nuevo registro de rigging.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Guardar Registro</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
