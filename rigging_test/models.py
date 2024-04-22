@@ -131,9 +131,7 @@ class Rig(db.Model):
     def canopy(self):
         for component in self.components:
             if component.component_type.component_type == 'Canopy':
-                print(f"Canopy encontrado: {component.serial_number}")
                 return component
-        print("No se encontró un canopy.")
         return None
 
     @property
@@ -164,7 +162,8 @@ class RiggingType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255))
-
+    def __repr__(self):
+        return f'{self.name}'
 
 class Rigging(db.Model):
     id = db.Column(db.Integer, primary_key=True)

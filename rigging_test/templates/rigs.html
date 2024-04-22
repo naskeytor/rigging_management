@@ -1,35 +1,39 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>List of Rigs</title>
-</head>
-<body>
+{% extends 'index.html' %}
 
-    <h1>List of Rigs</h1>
-    <a href="{{ url_for('index') }}">Home</a>
+{% block content %}
+    <table class="full-width-table-rig">
+        <thead class="header">
+        <tr>
+            <th>Rig Number</th>
+            <th>Canopy</th>
+            <th>Container</th>
+            <th>Reserve</th>
+            <th>AAD</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for rig in rigs %}
+            <tr class="clickable-row" data-id="{{ rig.id }}">
+                <td>{{ rig.rig_number | default('', true) }}</td>
+                <td>{{ rig.canopy.serial_number | default('N/A', true) }}</td>
+                <td>{{ rig.container.serial_number | default('N/A', true) }}</td>
+                <td>{{ rig.reserve.serial_number | default('N/A', true) }}</td>
+                <td>{{ rig.aad.serial_number | default('N/A', true) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
 
-    {% if rigs %}
-        <ul>
-            {% for rig in rigs %}
-                <li> {{ rig.rig_number }}
-                    <a href="{{ url_for('edit_rig', rig_id=rig.id) }}">Edit</a>
-                    <form action="{{ url_for('delete_rig', rig_id=rig.id) }}" method="POST">
-                        <input type="submit" value="Eliminar">
-                    </form>
-                    <a href="{{ url_for('show_rig', rig_id=rig.id) }}">Show</a>
-                    <ul>
-                        <li>Canopy: {{ rig.canopy.serial_number if rig.canopy else '' }}</li>
-                        <li>Container: {{ rig.container.serial_number if rig.container else '' }}</li>
-                        <li>Reserve: {{ rig.reserve.serial_number if rig.reserve else '' }}</li>
-                        <li>AAD: {{ rig.aad.serial_number if rig.aad else '' }}</li>
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No rigs have been added yet.</p>
-    {% endif %}
-    <a href="{{ url_for('add_rig') }}">Add New Rig</a>
-
-</body>
-</html>
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.clickable-row').forEach(row => {
+            row.addEventListener('click', function () {
+                let rigId = this.getAttribute('data-id');
+                window.location.href = `/rig/${rigId}`;
+            });
+        });
+    });
+</script>
+{% endblock %}

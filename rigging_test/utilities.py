@@ -22,5 +22,6 @@ def prepare_component_data():
     available_reserves = Component.query.filter_by(component_type_id=reserve_type_id, rig_id=None).all()
     available_aads = Component.query.filter_by(component_type_id=aad_type_id, rig_id=None).all()
 
+
     # Devolvemos los conjuntos de datos para cada tipo de componente.
     return available_canopies, available_containers, available_reserves, available_aads

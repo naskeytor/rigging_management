@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Rigging</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Detalles de Rigging</h2>
+        <ul>
+            {% for rigging in rigging %}
+                <li>
+                    Fecha: {{ rigging.date.strftime('%Y-%m-%d') }}
+                    Rigger: {{ rigging.rigger }}
+                    Action: {{ rigging.type_rigging.value }}
+                    <br>
+                    Número de serie: {{ rigging.serial_numbers }}
+                    {% if rigging.rig_id %}
+                        <br>
+                        Rig: {{ rigging.rig_id.rig_number }}
+                    {% elif rigging.component_id %}
+                        <br>
+                        Componente: {{ rigging.component.component_type.component_type }}
+
+                    {% else %}
+                        <br>
+                        No asociado a Rig o Componente específico.
+                    {% endif %}
+                    <a href="{{ url_for('edit_rigging', rigging_id=rigging.id) }}">Edit</a>
+                    <form action="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" method="post" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este rigging?');">
+                        <input type="submit" value="Eliminar">
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('rigging_add') }}">Añadir nuevo Rigging</a>
+        <a href="{{ url_for('index') }}">Back to Index</a>
+    </div>
+</body>
+</html>
+

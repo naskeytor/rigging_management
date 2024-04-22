@@ -55,26 +55,42 @@ html, body {
     background-color: #575c66; /* Color cuando se pasa el mouse por encima */
 }
 
-/* Estilos para la tabla */
-.full-width-table {
+/* Estilos compartidos para ambas tablas */
+.full-width-table, .full-width-table-rig {
     width: 100%; /* La tabla ocupa todo el ancho disponible */
     border-collapse: collapse; /* Elimina el espacio entre las celdas */
     background-color: #343940; /* Color de fondo para las celdas de la tabla */
     text-align: center;
 }
 
-.full-width-table th,
-.full-width-table td {
+.full-width-table th, .full-width-table td,
+.full-width-table-rig th, .full-width-table-rig td {
     color: white; /* Texto blanco para las celdas */
     padding: 10px; /* Espaciado interno en las celdas */
     border-bottom: 2px solid white; /* Línea divisoria blanca entre filas */
-    cursor: pointer;
+    cursor: pointer; /* Cursor en forma de mano para indicar que es clickable */
 }
 
+.full-width-table a, .full-width-table-rig a {
+    color: white; /* Asegura que los enlaces son blancos */
+    text-decoration: none; /* Elimina el subrayado de los enlaces */
+}
+
+.full-width-table a:hover, .full-width-table-rig a:hover {
+    text-decoration: underline; /* Agrega subrayado al pasar el mouse para mejorar la interactividad */
+}
+
+/* Estilos específicos para la interacción del mouse en .full-width-table */
 .full-width-table tbody tr:hover {
     background-color: #575c66; /* Cambia el color según tu preferencia */
-    cursor: pointer; /* Cambia el cursor a una mano para indicar que es clickable */
 }
+
+/* Sin efecto hover para .full-width-table-rig */
+.full-width-table-rig tbody tr:hover {
+    background-color: #343940; /* Mismo color que el de fondo, no cambia al hacer hover */
+}
+
+
 
 
 /* Estilos para las pestañas, como ya los tienes */
