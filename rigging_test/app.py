@@ -15,9 +15,11 @@ login_manager.init_app(app)
 db.init_app(app)
 migrate.init_app(app, db)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -43,6 +45,7 @@ def register():
         # Redirige o maneja el flujo post-registro
     return render_template('register.html')
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -56,11 +59,13 @@ def login():
             flash('Nombre de usuario o contraseña incorrectos.', 'danger')
     return render_template('login.html')
 
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
 
 @app.route('/admin')
 @login_required
@@ -88,6 +93,7 @@ def edit_user(user_id):
         return redirect(url_for('user_list'))
 
     return render_template('edit_user.html', user=user)
+
 
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
 @login_required
@@ -182,6 +188,7 @@ def assign_roles(user_id=None):
     selected_user = User.query.get(user_id) if user_id else None
     return render_template('assign_roles.html', users=users, roles=roles, selected_user=selected_user)
 
+
 @app.route('/delete_role/<int:role_id>', methods=['POST'])
 @login_required
 def delete_role(role_id):
@@ -202,8 +209,6 @@ def delete_role(role_id):
     return redirect(url_for('list_roles'))
 
 
-
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -214,7 +219,7 @@ def index():
 @app.route('/components')
 @app.route('/components/<component_type>')
 def view_components(component_type=None):
-    #component = Component.query.get_or_404(id)
+    # component = Component.query.get_or_404(id)
     component_types = ComponentType.query.all()  # Fetch all component types
     component_sizes = Size.query.all()  # Fetch all sizes
     component_statuses = Status.query.all()  # Fetch all statuses
@@ -254,7 +259,6 @@ def show_component(component_id):
                            component_statuses=component_statuses, component_models=component_models)
 
 
-
 @app.route('/component/add', methods=['GET', 'POST'])
 def add_component():
     message = None
@@ -273,7 +277,7 @@ def add_component():
         if rig_id:
             rig = Rig.query.get(rig_id)
             if rig:
-                #new_component.rigs.append(rig)  # Asumiendo una relación de muchos a muchos
+                # new_component.rigs.append(rig)  # Asumiendo una relación de muchos a muchos
                 new_component.rig_id = rig.id
 
         db.session.add(new_component)
@@ -284,10 +288,11 @@ def add_component():
     component_statuses = Status.query.all()
     component_models = Model.query.all()
     return render_template('add_component.html',
-                            component_types=component_types,
-                            component_sizes=component_sizes,
-                            component_statuses=component_statuses,
-                            component_models=component_models)
+                           component_types=component_types,
+                           component_sizes=component_sizes,
+                           component_statuses=component_statuses,
+                           component_models=component_models)
+
 
 @app.route('/component/edit/<int:id>', methods=['GET', 'POST'])
 def edit_component(id):
@@ -297,7 +302,7 @@ def edit_component(id):
     component_sizes = Size.query.all()  # Fetch all sizes
     component_statuses = Status.query.all()  # Fetch all statuses
     component_models = Model.query.all()
-    #rigs = Rig.query.all()  # Fetch all rigs
+    # rigs = Rig.query.all()  # Fetch all rigs
 
     if request.method == 'POST':
         # Update component with form data
@@ -319,6 +324,7 @@ def edit_component(id):
                            component_statuses=component_statuses,
                            component_models=component_models)
 
+
 @app.route('/component/delete/<int:id>', methods=['POST'])
 def delete_component(id):
     component = Component.query.get_or_404(id)
@@ -335,6 +341,7 @@ def view_manufacturers():
     manufacturers = Manufacturer.query.all()
     return render_template('view_manufacturers.html', manufacturers=manufacturers)
 
+
 @app.route('/manufacturer/add', methods=['GET', 'POST'])
 def add_manufacturer():
     message = None
@@ -346,6 +353,7 @@ def add_manufacturer():
         message = "New manufacturer added successfully."
     return render_template('add_manufacturer.html', message=message)
 
+
 @app.route('/manufacturer/edit/<int:id>', methods=['GET', 'POST'])
 def edit_manufacturer(id):
     manufacturer = Manufacturer.query.get_or_404(id)
@@ -354,6 +362,7 @@ def edit_manufacturer(id):
         db.session.commit()
         return redirect(url_for('view_manufacturers'))
     return render_template('edit_manufacturer.html', manufacturer=manufacturer)
+
 
 @app.route('/manufacturer/delete/<int:id>', methods=['POST'])
 def delete_manufacturer(id):
@@ -371,6 +380,7 @@ def view_sizes():
     sizes = Size.query.all()
     return render_template('view_sizes.html', sizes=sizes)
 
+
 @app.route('/size/add', methods=['GET', 'POST'])
 def add_size():
     message = None
@@ -381,6 +391,7 @@ def add_size():
         message = "New size added successfully."
     return render_template('add_size.html', message=message)
 
+
 @app.route('/size/edit/<int:id>', methods=['GET', 'POST'])
 def edit_size(id):
     size = Size.query.get_or_404(id)
@@ -389,6 +400,7 @@ def edit_size(id):
         db.session.commit()
         return redirect(url_for('view_sizes'))
     return render_template('edit_size.html', size=size)
+
 
 @app.route('/size/delete/<int:id>', methods=['POST'])
 def delete_size(id):
@@ -406,6 +418,7 @@ def view_statuses():
     statuses = Status.query.all()
     return render_template('view_statuses.html', statuses=statuses)
 
+
 @app.route('/status/add', methods=['GET', 'POST'])
 def add_status():
     message = None
@@ -416,6 +429,7 @@ def add_status():
         message = "New status added successfully."
     return render_template('add_status.html', message=message)
 
+
 @app.route('/status/edit/<int:id>', methods=['GET', 'POST'])
 def edit_status(id):
     status = Status.query.get_or_404(id)
@@ -425,12 +439,14 @@ def edit_status(id):
         return redirect(url_for('view_statuses'))
     return render_template('edit_status.html', status=status)
 
+
 @app.route('/status/delete/<int:id>', methods=['POST'])
 def delete_status(id):
     status = Status.query.get_or_404(id)
     db.session.delete(status)
     db.session.commit()
     return redirect(url_for('view_statuses'))
+
 
 ####################        COmponent types
 
@@ -439,6 +455,7 @@ def delete_status(id):
 def view_component_types():
     component_types = ComponentType.query.all()
     return render_template('view_component_types.html', component_types=component_types)
+
 
 @app.route('/component_type/add', methods=['GET', 'POST'])
 def add_component_type():
@@ -450,6 +467,7 @@ def add_component_type():
         message = "New component type added successfully."
     return render_template('add_component_type.html', message=message)
 
+
 @app.route('/component_type/edit/<int:id>', methods=['GET', 'POST'])
 def edit_component_type(id):
     component_type = ComponentType.query.get_or_404(id)
@@ -459,6 +477,7 @@ def edit_component_type(id):
         return redirect(url_for('view_component_types'))
     return render_template('edit_component_type.html', component_type=component_type)
 
+
 @app.route('/component_type/delete/<int:id>', methods=['POST'])
 def delete_component_type(id):
     component_type = ComponentType.query.get_or_404(id)
@@ -466,10 +485,12 @@ def delete_component_type(id):
     db.session.commit()
     return redirect(url_for('view_component_types'))
 
+
 @app.route('/models')
 def view_models():
     models = Model.query.all()
     return render_template('view_models.html', models=models)
+
 
 @app.route('/model/add', methods=['GET', 'POST'])
 def add_model():
@@ -486,6 +507,7 @@ def add_model():
     manufacturers = Manufacturer.query.all()
     return render_template('add_model.html', manufacturers=manufacturers, message=message)
 
+
 @app.route('/model/edit/<int:id>', methods=['GET', 'POST'])
 def edit_model(id):
     model = Model.query.get_or_404(id)
@@ -498,12 +520,14 @@ def edit_model(id):
     manufacturers = Manufacturer.query.all()
     return render_template('edit_model.html', model=model, manufacturers=manufacturers)
 
+
 @app.route('/model/delete/<int:id>', methods=['POST'])
 def delete_model(id):
     model = Model.query.get_or_404(id)
     db.session.delete(model)
     db.session.commit()
     return redirect(url_for('view_models'))
+
 
 ############################      RIGS
 
@@ -512,15 +536,27 @@ def list_rigs():
     rigs = Rig.query.all()
     return render_template('rigs.html', rigs=rigs)
 
+
 @app.route('/rig/<int:rig_id>')
 @login_required
 def show_rig(rig_id):
     rig = Rig.query.get_or_404(rig_id)
-    riggings = Rigging.query.filter((Rigging.rig_id == rig_id) | (Rigging.serial_numbers == rig.rig_number)).order_by(Rigging.date.desc()).all()
-    return render_template('show_rig.html', rig=rig, riggings=riggings)
+    # Asumiendo que tienes relaciones como rig.canopy, rig.container, etc.
+    canopy_serial = rig.canopy.serial_number if rig.canopy else "No asignado"
+    container_serial = rig.container.serial_number if rig.container else "No asignado"
+    reserve_serial = rig.reserve.serial_number if rig.reserve else "No asignado"
+    aad_serial = rig.aad.serial_number if rig.aad else "No asignado"
+
+    riggings = Rigging.query.filter((Rigging.rig_id == rig_id) | (Rigging.serial_numbers == rig.rig_number)).order_by(
+        Rigging.date.desc()).all()
+
+    return render_template('show_rig.html', rig=rig, riggings=riggings, canopy_serial=canopy_serial,
+                           container_serial=container_serial, reserve_serial=reserve_serial, aad_serial=aad_serial)
+
 
 @app.route('/rigs/add', methods=['GET', 'POST'])
 def add_rig():
+    print("Request method:", request.method)
     if request.method == 'POST':
         rig_number = request.form.get('rig_number')
 
@@ -543,8 +579,6 @@ def add_rig():
         reserve_serial = request.form.get('reserve')
         aad_serial = request.form.get('aad')
 
-
-
         for serial, type_name in [(canopy_serial, 'Canopy'), (container_serial, 'Container'),
                                   (reserve_serial, 'Reserve'), (aad_serial, 'AAD')]:
             component = find_component_by_serial(serial, type_name)
@@ -552,16 +586,16 @@ def add_rig():
                 new_rig.components.append(component)
                 component.rig_id = new_rig.id  # Asegúrate de actualizar rig_id aquí
 
-
         db.session.commit()
 
         return redirect(url_for('list_rigs'))
     else:
         # Preparación de los datos necesarios para el formulario
         available_canopies, available_containers, available_reserves, available_aads = prepare_component_data()
-        return render_template('add_rig.html', available_canopies=available_canopies,
+        return render_template('index.html', available_canopies=available_canopies,
                                available_containers=available_containers, available_reserves=available_reserves,
                                available_aads=available_aads)
+
 
 @app.route('/rigs/delete/<int:rig_id>', methods=['POST'])
 def delete_rig(rig_id):
@@ -580,6 +614,7 @@ def delete_rig(rig_id):
     db.session.delete(rig)  # Eliminar el rig
     db.session.commit()  # Aplicar los cambios
     return redirect(url_for('list_rigs'))
+
 
 @app.route('/rigs/edit/<int:rig_id>', methods=['GET', 'POST'])
 def edit_rig(rig_id):
@@ -633,6 +668,7 @@ def edit_rig(rig_id):
         return render_template('edit_rig.html', available_canopies=available_canopies,
                                available_containers=available_containers, available_reserves=available_reserves,
                                available_aads=available_aads, rig=rig, _anchor='riggingTab')
+
 
 @app.route('/rigging')
 def list_rigging():
@@ -693,7 +729,6 @@ def rigging_add(component_id=None):
                            rigging_types=rigging_types, preselected_component_id=component_id)
 
 
-
 @app.route('/rigging/edit/<int:rigging_id>', methods=['GET', 'POST'])
 @login_required
 def edit_rigging(rigging_id):
@@ -723,7 +758,7 @@ def edit_rigging(rigging_id):
                     rig_id = rig.id
 
         rigging.date = date
-        #rigging.type_rigging = RiggingType[type_rigging] if type_rigging in RiggingType.__members__ else None
+        # rigging.type_rigging = RiggingType[type_rigging] if type_rigging in RiggingType.__members__ else None
         rigging_type = RiggingType.query.get(int(type_rigging_id))
         if rigging_type:
             rigging.type_rigging = rigging_type  # Asignar la instancia, no el ID
@@ -744,7 +779,6 @@ def edit_rigging(rigging_id):
                            rigs=rigs, type_rigging=type_rigging)
 
 
-
 @app.route('/rigging/delete/<int:rigging_id>', methods=['POST'])
 @login_required
 def delete_rigging(rigging_id):
@@ -755,6 +789,17 @@ def delete_rigging(rigging_id):
     flash('Rigging eliminado correctamente.', 'success')
 
     return redirect(url_for('list_rigging'))
+
+
+@app.context_processor
+def inject_component_data():
+    available_canopies, available_containers, available_reserves, available_aads = prepare_component_data()
+    return {
+        'available_canopies': available_canopies,
+        'available_containers': available_containers,
+        'available_reserves': available_reserves,
+        'available_aads': available_aads
+    }
 
 
 if __name__ == '__main__':

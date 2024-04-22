@@ -1,49 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- Metadata y links aquí -->
-</head>
-<body>
-    <div class="container">
-        <h2>Detalles del Rig</h2>
+{% extends 'index.html' %}
 
-        <ul>
-            <li>Canopy: {{ rig.canopy.model.model if rig.canopy else '' }}-{{ rig.canopy.sizes.size }}</li>
-            <li>Container: {{ rig.container.model.model if rig.container else '' }}</li>
-            <li>Reserve: {{ rig.reserve.model.model if rig.reserve else '' }}-{{ rig.reserve.sizes.size }}</li>
-            <li>AAD: {{ rig.aad.model.model if rig.aad else '' }}</li>
-        </ul>
+{% block content %}
 
-        <h3>Registros de Rigging</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Fecha</th>
-                    <th>Rigger</th>
-                    <th>Descripción</th>
-                    <th>Número de Serie</th>
-                </tr>
-            </thead>
+    <style>
+        .table a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .table a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <div class="container mt-4" style="color: white;">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>{{ rig.rig_number }}</h2>
+            <div>
+                <!-- Botón para editar -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editRigModal">
+                    Editar
+                </button>
+                <!-- Botón para eliminar -->
+                <form action="{{ url_for('delete_rig', rig_id=rig.id) }}" method="post" style="display: inline;">
+                    <input type="submit" value="Delete" class="btn btn-danger"
+                           onclick="return confirm('Are you sure?')">
+                </form>
+            </div>
+        </div>
+        <table class="table table-bordered" style="color: white;">
             <tbody>
-                {% for rigging in riggings %}
-                <tr>
-                    <td>{{ rigging.date.strftime('%Y-%m-%d') }}</td>
-                    <td>{{ rigging.rigger.username if rigging.rigger else 'N/A' }}</td>
-                    <td>{{ rigging.type_rigging.value }}</td>
-                    <td>{{ rigging.description }}</td>
-                    <td>{{ rigging.serial_numbers }}</td>
-                    <td>
-                        <a href="{{ url_for('edit_rigging', rigging_id=rigging.id) }}" class="btn btn-primary">Editar</a>
-                        <form action="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" method="post" style="display: inline;">
-                            <input type="submit" value="Eliminar" class="btn btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este registro de Rigging?');">
-                        </form>
-                    </td>
-                </tr>
-                {% endfor %}
+            <tr>
+                <th>Rig Number</th>
+                <td>{{ rig.rig_number }}</td>
+            </tr>
+            <!-- Agrega más filas para otros detalles del rig -->
             </tbody>
         </table>
 
-        <a href="{{ url_for('list_rigs') }}">Volver a la lista</a>
+        <h3>Componentes del Rig</h3>
+        <table class="table table-bordered" style="color: white;">
+            <thead>
+            <tr>
+                <th>Componente</th>
+                <th>Número de Serie</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if rig.canopy %}
+                <tr>
+                    <th>Canopy</th>
+                    <td>
+                        <a href="{{ url_for('show_component', component_id=rig.canopy.id) }}">{{ rig.canopy.serial_number }}</a>
+                    </td>
+                </tr>
+            {% endif %}
+            {% if rig.container %}
+                <tr>
+                    <th>Container</th>
+                    <td>
+                        <a href="{{ url_for('show_component', component_id=rig.container.id) }}">{{ rig.container.serial_number }}</a>
+                    </td>
+                </tr>
+            {% endif %}
+            {% if rig.reserve %}
+                <tr>
+                    <th>Reserve</th>
+                    <td>
+                        <a href="{{ url_for('show_component', component_id=rig.reserve.id) }}">{{ rig.reserve.serial_number }}</a>
+                    </td>
+                </tr>
+            {% endif %}
+            {% if rig.aad %}
+                <tr>
+                    <th>AAD</th>
+                    <td>
+                        <a href="{{ url_for('show_component', component_id=rig.aad.id) }}">{{ rig.aad.serial_number }}</a>
+                    </td>
+                </tr>
+            {% endif %}
+            </tbody>
+
+        </table>
+
+        <!-- Aquí puedes agregar la sección de registros de rigging como en el componente, si es necesario -->
     </div>
-</body>
-</html>
+
+    <!-- Modal para editar -->
+    <div class="modal fade" id="editRigModal" tabindex="-1" role="dialog"
+         aria-labelledby="editRigModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="{{ url_for('edit_rig', rig_id=rig.id) }}" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editRigModalLabel">Edit Rig</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="rig_number">Rig Number:</label>
+                        <input type="text" name="rig_number" id="rig_number" value="{{ rig.rig_number }}" required><br>
+
+                        <label for="canopy">Canopy:</label>
+                        <select name="canopy" id="canopy">
+                            <option value="">-- Select Canopy --</option>
+                            {% for canopy in available_canopies %}
+                                <option value="{{ canopy.serial_number }}"
+                                        {% if canopy.serial_number == rig.canopy_serial %}selected{% endif %}>{{ canopy.serial_number }}</option>
+                            {% endfor %}
+                        </select><br>
+
+                        <label for="container">Container:</label>
+                        <select name="container" id="container">
+                            <option value="">-- Select Container --</option>
+                            {% for container in available_containers %}
+                                <option value="{{ container.serial_number }}"
+                                        {% if container.serial_number == rig.container_serial %}selected{% endif %}>{{ container.serial_number }}</option>
+                            {% endfor %}
+                        </select><br>
+
+                        <label for="reserve">Reserve:</label>
+                        <select name="reserve" id="reserve">
+                            <option value="">-- Select Reserve --</option>
+                            {% for reserve in available_reserves %}
+                                <option value="{{ reserve.serial_number }}"
+                                        {% if reserve.serial_number == rig.reserve_serial %}selected{% endif %}>{{ reserve.serial_number }}</option>
+                            {% endfor %}
+                        </select><br>
+
+                        <label for="aad">AAD:</label>
+                        <select name="aad" id="aad">
+                            <option value="">-- Select Aad --</option>
+                            {% for aad in available_aads %}
+                                <option value="{{ aad.serial_number }}"
+                                        {% if aad.serial_number == rig.aad_serial %}selected{% endif %}>{{ aad.serial_number }}</option>
+                            {% endfor %}
+                        </select><br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Registro</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
