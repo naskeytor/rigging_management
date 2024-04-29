@@ -63,10 +63,13 @@
 
                 <div class="modal-body">
                     <!-- Contenido del formulario -->
+                    Serial Number: <input type="text" name="serial_number" required><br>
                     Component Type:
                     <select name="component_type_id" required>
                         {% for type in component_types %}
-                            <option value="{{ type.id }}">{{ type.component_type }}</option>
+                            {% if type.component_type != 'Rig' %}
+                                <option value="{{ type.id }}">{{ type.component_type }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select><br>
                     Serial Number: <input type="text" name="serial_number" required><br>
@@ -169,6 +172,15 @@
                     window.location.href = `/rig/${rigId}`;
                 });
             });
+        } else if (window.location.pathname.includes('/rigging')) {
+            // Agregar evento de clic a cada fila de la tabla de rigging
+            document.querySelectorAll('.full-width-table-rigging tbody tr').forEach(row => {
+                row.addEventListener('click', function () {
+                    // Redirige a la página de detalles de rigging
+                    const riggingId = row.getAttribute('data-id');
+                    window.location.href = `/rigging/${riggingId}`;
+                });
+            });
         } else {
             // Agregar evento de clic a cada fila de la tabla de componentes
             document.querySelectorAll('.full-width-table tbody tr').forEach(row => {
@@ -181,6 +193,7 @@
         }
     });
 </script>
+
 
 
 <!-- jQuery y Popper.js (necesarios para Bootstrap) -->

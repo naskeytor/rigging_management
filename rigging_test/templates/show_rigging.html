@@ -1,0 +1,54 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <style>
+        .table a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .table a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <div class="container mt-4" style="color: white;">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>{{ rigging.serial_numbers }}</h2>
+            <div>
+                <!-- Botón para editar -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editRiggingModal">
+                    Editar
+                </button>
+                <!-- Botón para eliminar -->
+                <form action="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" method="post" style="display: inline;">
+                    <input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure?')">
+                </form>
+            </div>
+        </div>
+        <table class="table table-bordered" style="color: white;">
+            <tbody>
+                <tr>
+                    <th>Date</th>
+                    <td>{{ rigging.date }}</td>
+                </tr>
+                <tr>
+                    <th>Rigger</th>
+                    <td>{{ rigging.rigger if rigging.rigger else 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <th>Action</th>
+                    <td>{{ rigging.type_rigging if rigging.type_rigging else 'N/A' }}</td>
+                </tr>
+                <tr>
+                    <th>Serial N</th>
+                    <td>{{ rigging.serial_numbers }}</td>
+                </tr>
+                <tr>
+                    <th>Component</th>
+                    <td>{{ rigging.component.serial_number if rigging.component else 'N/A' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
