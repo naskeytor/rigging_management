@@ -283,7 +283,8 @@ def add_component():
         db.session.add(new_component)
         db.session.commit()
         return redirect(url_for('view_components'))
-    component_types = ComponentType.query.all()
+    #component_types = ComponentType.query.all()
+    component_types = ComponentType.query.filter(ComponentType.component_type != 'Rig').all()
     component_sizes = Size.query.all()
     component_statuses = Status.query.all()
     component_models = Model.query.all()
@@ -674,6 +675,22 @@ def edit_rig(rig_id):
 def list_rigging():
     rigging = Rigging.query.all()
     return render_template('rigging.html', rigging=rigging)
+
+@app.route('/rigging/<int:rigging_id>')
+@login_required
+def show_rigging(rigging_id):
+    rigging = Rigging.query.get_or_404(rigging_id)
+    rigging_date = rigging.date
+    rigging_rigger = rigging.rigger
+    type_rigging = rigging.type_rigging
+    serial_number = rigging.serial_numbers
+    component_type = rigging.component
+    description = rigging.description
+
+    return render_template('show_rigging.html', rigging=rigging,
+                           rigging_date=rigging_date, rigging_rigger=rigging_rigger,
+                           type_rigging=type_rigging, serial_number=serial_number, component_type=component_type,
+                           description=description)
 
 
 @app.route('/rigging/add', methods=['GET', 'POST'])
