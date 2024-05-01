@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from extensions import db, migrate
 from models import Manufacturer, Size, Status, ComponentType, Model, Component, Rig, User, Role, Rigging, RiggingType
 from utilities import find_component_by_serial, prepare_component_data
@@ -671,6 +671,8 @@ def edit_rig(rig_id):
                                available_aads=available_aads, rig=rig, _anchor='riggingTab')
 
 
+
+
 @app.route('/rigging')
 def list_rigging():
     rigging = Rigging.query.all()
@@ -691,6 +693,21 @@ def show_rigging(rigging_id):
                            rigging_date=rigging_date, rigging_rigger=rigging_rigger,
                            type_rigging=type_rigging, serial_number=serial_number, component_type=component_type,
                            description=description)
+
+@app.context_processor
+def inject_rigging_types():
+    rigging_types = RiggingType.query.all()
+    return dict(rigging_types=rigging_types)
+@app.context_processor
+def inject_rigs():
+    rigs = Rig.query.all()
+    return dict(rigs=rigs)
+
+@app.context_processor
+def inject_rigging_components(component_id=None):
+    components = Component.query.all() if not component_id else [Component.query.get(int(component_id))]
+    return dict(components=components)
+
 
 
 @app.route('/rigging/add', methods=['GET', 'POST'])
@@ -742,7 +759,7 @@ def rigging_add(component_id=None):
     components = Component.query.all() if not component_id else [Component.query.get(int(component_id))]
     rigs = Rig.query.all()
     rigging_types = RiggingType.query.all()  # Obtienes todos los tipos de rigging
-    return render_template('add_rigging.html', components=components, rigs=rigs,
+    return render_template('index.html', components=components, rigs=rigs,
                            rigging_types=rigging_types, preselected_component_id=component_id)
 
 
@@ -792,8 +809,17 @@ def edit_rigging(rigging_id):
     rigs = Rig.query.all()
     type_rigging = RiggingType.query.all()
 
-    return render_template('edit_rigging.html', rigging=rigging, components=components,
-                           rigs=rigs, type_rigging=type_rigging)
+    # return render_template('edit_rigging.html', rigging=rigging, components=components,
+    #                    rigs=rigs, type_rigging=type_rigging)
+
+    data = {
+        'components': [component.to_dict() for component in components],  # Asumiendo que tienes un método to_dict()
+        'rigs': [rig.to_dict() for rig in rigs],
+        'rigging_types': [rigging_type.to_dict() for rigging_type in type_rigging],
+        'rigging': [rigging.to_dict() for rigging in rigging]
+    }
+
+    return render_template('index.html', data=data)
 
 
 @app.route('/rigging/delete/<int:rigging_id>', methods=['POST'])
