@@ -21,34 +21,72 @@
                     Editar
                 </button>
                 <!-- Botón para eliminar -->
-                <form action="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" method="post" style="display: inline;">
-                    <input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure?')">
+                <form action="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" method="post"
+                      style="display: inline;">
+                    <input type="submit" value="Delete" class="btn btn-danger"
+                           onclick="return confirm('Are you sure?')">
                 </form>
             </div>
         </div>
         <table class="table table-bordered" style="color: white;">
             <tbody>
-                <tr>
-                    <th>Date</th>
-                    <td>{{ rigging.date }}</td>
-                </tr>
-                <tr>
-                    <th>Rigger</th>
-                    <td>{{ rigging.rigger if rigging.rigger else 'N/A' }}</td>
-                </tr>
-                <tr>
-                    <th>Action</th>
-                    <td>{{ rigging.type_rigging if rigging.type_rigging else 'N/A' }}</td>
-                </tr>
-                <tr>
-                    <th>Serial N</th>
-                    <td>{{ rigging.serial_numbers }}</td>
-                </tr>
-                <tr>
-                    <th>Component</th>
-                    <td>{{ rigging.component.serial_number if rigging.component else 'N/A' }}</td>
-                </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ rigging.date }}</td>
+            </tr>
+            <tr>
+                <th>Rigger</th>
+                <td>{{ rigging.rigger if rigging.rigger else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th>Action</th>
+                <td>{{ rigging.type_rigging if rigging.type_rigging else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th>Serial N</th>
+                <td>{{ rigging.serial_numbers }}</td>
+            </tr>
+            <tr>
+                <th>Component</th>
+                <td>{{ rigging.component.serial_number if rigging.component else 'N/A' }}</td>
+            </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="modal fade" id="editRiggingModal" tabindex="-1" role="dialog"
+         aria-labelledby="editRiggingModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editRiggingModalLabel">Editar Rigging</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ url_for('edit_rigging', rigging_id=rigging.id) }}" method="post">
+
+                    <label for="date">Fecha:</label>
+                    <input type="date" name="date" id="date" value="{{ rigging.date.strftime('%Y-%m-%d') }}"
+                           required><br>
+
+                    <label for="rigging_types">Tipo de Rigging:</label>
+                    <select name="rigging_types" id="rigging_types-{{ rigging.id }}" required>
+                        {% for type in rigging_types %}
+                            <option value="{{ type.id }}">{{ type.name }}</option>
+                        {% endfor %}
+                    </select><br>
+
+                    <label for="description">Descripción:</label>
+                    <textarea name="description" id="description">{{ rigging.description }}</textarea>
+                    <br>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Registro</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}
