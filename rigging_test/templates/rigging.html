@@ -6,19 +6,21 @@
         <tr>
             <th>Date</th>
             <th>Rigger</th>
-            <th>Action</th>
-            <th>Serial N</th>
+            <th>Number</th>
             <th>Component</th>
+            <th>Type</th>
+            <th>Description</th>
         </tr>
         </thead>
         <tbody>
         {% for item in rigging %}  <!-- Cambiado a 'rig' y 'riggings' -->
             <tr class="clickable-row" data-id="{{ item.id }}">
                 <td>{{ item.date | default('', true) }}</td>
-                <td>{{ item.rigger | default('N/A', true) }}</td>
+                <td>{{ item.rigger | default('', true) }}</td>
                 <td>{{ item.serial_numbers | default('', true) }}</td>
-                <td>{{ item.component.serial_number | default('N/A', true) }}</td>  <!-- Corregido el acceso a component -->
-                <td>{{ item.type_rigging.name | default('N/A', true) }}</td>
+                <td>{{ item.component.component_type | default('', true) }}</td>  <!-- Corregido el acceso a component -->
+                <td>{{ item.type_rigging.name | default('', true) }}</td>
+                <th>{{ item.description | default('', true) }}</th>
             </tr>
         {% endfor %}
         </tbody>

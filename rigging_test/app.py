@@ -704,6 +704,11 @@ def inject_rigs():
     return dict(rigs=rigs)
 
 @app.context_processor
+def inject_rigging():
+    rigging = Rigging.query.all()
+    return dict(rigging=rigging)
+
+@app.context_processor
 def inject_rigging_components(component_id=None):
     components = Component.query.all() if not component_id else [Component.query.get(int(component_id))]
     return dict(components=components)
@@ -763,11 +768,12 @@ def rigging_add(component_id=None):
                            rigging_types=rigging_types, preselected_component_id=component_id)
 
 
+
+
 @app.route('/rigging/edit/<int:rigging_id>', methods=['GET', 'POST'])
 @login_required
 def edit_rigging(rigging_id):
     rigging = Rigging.query.get_or_404(rigging_id)
-
     if request.method == 'POST':
         date = request.form.get('date')
         type_rigging_id = request.form.get('type_rigging')
@@ -777,7 +783,7 @@ def edit_rigging(rigging_id):
         rig_id = None
         component_id = None
 
-        if selected_value:  # Asegúrate de que selected_value no esté vacío
+        if selected_value:
             selection_type, selection_id = selected_value.split('-')
 
             if selection_type == "Component":
@@ -792,14 +798,23 @@ def edit_rigging(rigging_id):
                     rig_id = rig.id
 
         rigging.date = date
-        # rigging.type_rigging = RiggingType[type_rigging] if type_rigging in RiggingType.__members__ else None
-        rigging_type = RiggingType.query.get(int(type_rigging_id))
-        if rigging_type:
-            rigging.type_rigging = rigging_type  # Asignar la instancia, no el ID
-
         rigging.description = description
         rigging.component_id = component_id
         rigging.rig_id = rig_id
+
+        # Verificar que el type_rigging_id sea un entero válido y no nulo antes de hacer la consulta
+        if type_rigging_id:
+            try:
+                type_rigging_id = int(type_rigging_id)
+                rigging_type = RiggingType.query.get(type_rigging_id)
+                if rigging_type:
+                    rigging.type_rigging = rigging_type
+                else:
+                    flash('Tipo de rigging no encontrado.', 'error')
+            except ValueError:
+                flash('ID de tipo de rigging inválido.', 'error')
+        else:
+            flash('ID de tipo de rigging no proporcionado.', 'error')
 
         db.session.commit()
         flash('Rigging actualizado correctamente.', 'success')
@@ -809,17 +824,9 @@ def edit_rigging(rigging_id):
     rigs = Rig.query.all()
     type_rigging = RiggingType.query.all()
 
-    # return render_template('edit_rigging.html', rigging=rigging, components=components,
-    #                    rigs=rigs, type_rigging=type_rigging)
+    return render_template('edit_rigging.html', rigging=rigging, components=components,
+                           rigs=rigs, type_rigging=type_rigging)
 
-    data = {
-        'components': [component.to_dict() for component in components],  # Asumiendo que tienes un método to_dict()
-        'rigs': [rig.to_dict() for rig in rigs],
-        'rigging_types': [rigging_type.to_dict() for rigging_type in type_rigging],
-        'rigging': [rigging.to_dict() for rigging in rigging]
-    }
-
-    return render_template('index.html', data=data)
 
 
 @app.route('/rigging/delete/<int:rigging_id>', methods=['POST'])

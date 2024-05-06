@@ -105,7 +105,7 @@ class ComponentType(db.Model):
     # Relationship to link back to Component
     components = db.relationship('Component', back_populates='component_type', lazy=True)
     def __repr__(self):
-        return f'<ComponentType {self.component_type}>'
+        return f'{self.component_type}'
 
 class Model(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -178,6 +178,8 @@ class Rigging(db.Model):
     rig_id = db.Column(db.Integer, db.ForeignKey('rig.id'), nullable=True)
     component_id = db.Column(db.Integer, db.ForeignKey('component.id'), nullable=True)
     component = db.relationship('Component', backref='riggings')
+
+
 
     #type_rigging = db.Column(db.Enum(RiggingType), nullable=False)
     type_rigging_id = db.Column(db.Integer, db.ForeignKey('rigging_type.id'), nullable=False)
