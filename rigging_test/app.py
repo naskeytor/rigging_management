@@ -3,6 +3,7 @@ from extensions import db, migrate
 from models import Manufacturer, Size, Status, ComponentType, Model, Component, Rig, User, Role, Rigging, RiggingType
 from utilities import find_component_by_serial, prepare_component_data
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from sqlalchemy.orm import joinedload
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '3664atanas'
@@ -243,6 +244,8 @@ def view_components(component_type=None):
                            type_rigging=type_rigging)
 
 
+
+
 @app.route('/component/show/<int:component_id>')
 @login_required
 def show_component(component_id):
@@ -251,9 +254,12 @@ def show_component(component_id):
     component_sizes = Size.query.all()  # Fetch all sizes
     component_statuses = Status.query.all()  # Fetch all statuses
     component_models = Model.query.all()
+
     type_rigging = RiggingType.query.all()
     # Obtener los registros de Rigging asociados a este componente
     riggings = Rigging.query.filter_by(component_id=component.id).order_by(Rigging.date.desc()).all()
+
+
     return render_template('show_component.html', component=component, riggings=riggings,
                            component_types=component_types, component_sizes=component_sizes,
                            component_statuses=component_statuses, component_models=component_models)
@@ -716,7 +722,7 @@ def inject_rigging_components(component_id=None):
 
 
 @app.route('/rigging/add', methods=['GET', 'POST'])
-@app.route('/rigging/add/component/<int:component_id>', methods=['GET', 'POST'])
+@app.route('/rigging/add/<int:component_id>', methods=['GET', 'POST'])
 @login_required
 def rigging_add(component_id=None):
     if request.method == 'POST':
@@ -724,6 +730,7 @@ def rigging_add(component_id=None):
         type_rigging_id = request.form.get('type_rigging')  # Obtienes el ID
         type_rigging = RiggingType.query.get(type_rigging_id)  # Conviertes el ID a la instancia de RiggingType
         selected_value = request.form.get('serial_numbers')
+        description = request.form.get('description')
         serial_numbers = ''
 
         rig_id = None
@@ -751,7 +758,7 @@ def rigging_add(component_id=None):
         rigger_id = current_user.id if 'rigger' in [role.name for role in current_user.roles] else None
 
         if rig_id or component_id:
-            new_rigging = Rigging(date=date, serial_numbers=serial_numbers, rig_id=rig_id,
+            new_rigging = Rigging(date=date, serial_numbers=serial_numbers, rig_id=rig_id, description=description,
                                   component_id=component_id, rigger_id=rigger_id, type_rigging=type_rigging)
             db.session.add(new_rigging)
             db.session.commit()
