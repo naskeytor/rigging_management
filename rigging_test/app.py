@@ -788,10 +788,11 @@ def edit_rigging(rigging_id):
         selected_value = request.form.get('serial_numbers')
 
         rig_id = None
-        component_id = None
+        component_id = rigging.component.id or None
 
         if selected_value:
             selection_type, selection_id = selected_value.split('-')
+
 
             if selection_type == "Component":
                 component = Component.query.get(int(selection_id))
