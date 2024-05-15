@@ -10,7 +10,7 @@
                     Editar
                 </button>
                 <!-- Botón para eliminar -->
-                <form action="{{ url_for('delete_component', id=component.id) }}" method="post"
+                <form action="{{ url_for('components.delete_component', id=component.id) }}" method="post"
                       style="display: inline;">
                     <input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Sure?')">
                 </form>
@@ -69,7 +69,7 @@
                     <td>{{ item.rigger if item.rigger else '' }}</td>
                     <td>{{ item.type_rigging.name if item.type_rigging else '' }}</td>
                     <td>{{ item.description | default('') }}</td>
-                    <td><a href="{{ url_for('show_rigging', rigging_id=item.id) }}">{{ item.description | default('') }}</a></td>
+                    <td><a href="{{ url_for('rigging.show_rigging', rigging_id=item.id) }}">{{ item.description | default('') }}</a></td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -88,7 +88,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ url_for('edit_component', id=component.id) }}" method="post">
+                <form action="{{ url_for('components.edit_component', id=component.id) }}" method="post">
                     Component Type:
                     <select name="component_type_id" required>
                         {% for type in component_types %}
@@ -148,7 +148,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ url_for('rigging_add') }}" method="post">
+                <form action="{{ url_for('rigging.rigging_add') }}" method="post">
 
                 </form>
             </div>

@@ -21,7 +21,7 @@
                     Editar
                 </button>
                 <!-- Botón para eliminar -->
-                <form action="{{ url_for('delete_rigging', rigging_id=rigging.id) }}" method="post"
+                <form action="{{ url_for('rigging.delete_rigging', rigging_id=rigging.id) }}" method="post"
                       style="display: inline;">
                     <input type="submit" value="Delete" class="btn btn-danger"
                            onclick="return confirm('Are you sure?')">
@@ -48,7 +48,11 @@
             </tr>
             <tr>
                 <th>Component</th>
-                <td>{{ rigging.component.serial_number if rigging.component else 'N/A' }}</td>
+                <td>{{ rigging.component.component_type if rigging.component else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ rigging.description }}</td>
             </tr>
             </tbody>
         </table>
@@ -64,18 +68,22 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ url_for('edit_rigging', rigging_id=rigging.id) }}" method="post">
+                <form action="{{ url_for('rigging.edit_rigging', rigging_id=rigging.id) }}" method="post">
 
                     <label for="date">Fecha:</label>
                     <input type="date" name="date" id="date" value="{{ rigging.date.strftime('%Y-%m-%d') }}"
                            required><br>
 
-                    <label for="rigging_types">Tipo de Rigging:</label>
-                    <select name="rigging_types" id="rigging_types-{{ rigging.id }}" required>
+                    <label for="type_rigging">Tipo de Rigging:</label>
+                    <select name="type_rigging" id="type_rigging-{{ rigging.type_rigging.id }}" required>
                         {% for type in rigging_types %}
-                            <option value="{{ type.id }}">{{ type.name }}</option>
+                            <option value="{{ type.id }}"
+                                    {% if rigging.type_rigging.id == type.id %}selected{% endif %}>
+                                {{ type.name }}
+                            </option>
                         {% endfor %}
                     </select><br>
+
 
                     <label for="description">Descripción:</label>
                     <textarea name="description" id="description">{{ rigging.description }}</textarea>

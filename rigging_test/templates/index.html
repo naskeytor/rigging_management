@@ -58,7 +58,7 @@
 <div class="modal fade" id="newComponentModal" tabindex="-1" aria-labelledby="newComponentModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
-        <form action="{{ url_for('add_component') }}" method="post">
+        <form action="{{ url_for('components.add_component') }}" method="post">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addComponentModalLabel">Add</h5>
@@ -112,7 +112,7 @@
 <!-- Modal para Nuevo Rig -->
 <div class="modal fade" id="newRigModal" tabindex="-1" aria-labelledby="newRigModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="{{ url_for('add_rig') }}" method="post">
+        <form action="{{ url_for('rigs.add_rig') }}" method="post">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="newRigModalLabel">Add New Rig</h5>
@@ -169,7 +169,7 @@
 <div class="modal fade" id="newRiggingRecordModal" tabindex="-1" aria-labelledby="newRiggingRecordModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
-        <form action="{{ url_for('rigging_add') }}" method="post">
+        <form action="{{ url_for('rigging.rigging_add') }}" method="post">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="newRiggingRecordModalLabel">Add New Rigging</h5>
