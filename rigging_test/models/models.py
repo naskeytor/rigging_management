@@ -152,7 +152,7 @@ class RiggingType(db.Model):
     description = Column(String(255))
 
     def __repr__(self):
-        return f'<RiggingType {self.name}>'
+        return f'{self.name}'
 
 class Rigging(db.Model):
     id = Column(Integer, primary_key=True)

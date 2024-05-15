@@ -48,7 +48,11 @@
             </tr>
             <tr>
                 <th>Component</th>
-                <td>{{ rigging.component.serial_number if rigging.component else 'N/A' }}</td>
+                <td>{{ rigging.component.component_type if rigging.component else 'N/A' }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ rigging.description }}</td>
             </tr>
             </tbody>
         </table>

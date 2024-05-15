@@ -74,7 +74,7 @@ def rigging_add(component_id=None):
         else:
             flash('Error al añadir Rigging: valor seleccionado inválido.', 'danger')
 
-        return redirect(url_for('list_rigging'))
+        return redirect(url_for('rigging.list_rigging'))
 
     components = Component.query.all() if not component_id else [Component.query.get(int(component_id))]
     rigs = Rig.query.all()
@@ -151,4 +151,4 @@ def delete_rigging(rigging_id):
     db.session.commit()
     flash('Rigging eliminado correctamente.', 'success')
 
-    return redirect(url_for('list_rigging'))
+    return redirect(url_for('rigging.list_rigging'))
