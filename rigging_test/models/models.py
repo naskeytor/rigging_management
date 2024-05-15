@@ -50,14 +50,14 @@ class User(UserMixin, db.Model):
         return any(role.name == role_name for role in self.roles)
 
     def __repr__(self):
-        return f'<User {self.username}>'
+        return f'{self.username}'
 
 class Manufacturer(db.Model):
     id = Column(Integer, primary_key=True)
     manufacturer = Column(String(50), nullable=False)
 
     def __repr__(self):
-        return f'<Manufacturer {self.manufacturer}>'
+        return f'{self.manufacturer}'
 
 class Size(db.Model):
     id = Column(Integer, primary_key=True)
@@ -65,7 +65,7 @@ class Size(db.Model):
     components = relationship('Component', back_populates='sizes')
 
     def __repr__(self):
-        return f'<Size {self.size}>'
+        return f'{self.size}'
 
 class Status(db.Model):
     id = Column(Integer, primary_key=True)
@@ -73,7 +73,7 @@ class Status(db.Model):
     components = relationship('Component', backref='status', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f'<Status {self.status}>'
+        return f'{self.status}'
 
 class ComponentType(db.Model):
     id = Column(Integer, primary_key=True)
@@ -81,7 +81,7 @@ class ComponentType(db.Model):
     components = relationship('Component', back_populates='component_type', lazy=True)
 
     def __repr__(self):
-        return f'<ComponentType {self.component_type}>'
+        return f'{self.component_type}'
 
 class Model(db.Model):
     id = Column(Integer, primary_key=True)
@@ -90,7 +90,7 @@ class Model(db.Model):
     manufacturer = relationship('Manufacturer', backref=db.backref('models', lazy=True, cascade="all, delete-orphan"))
 
     def __repr__(self):
-        return f'<Model {self.model}>'
+        return f'{self.model}'
 
 class Component(db.Model):
     id = Column(Integer, primary_key=True)

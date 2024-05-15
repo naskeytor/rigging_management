@@ -70,12 +70,16 @@
                     <input type="date" name="date" id="date" value="{{ rigging.date.strftime('%Y-%m-%d') }}"
                            required><br>
 
-                    <label for="rigging_types">Tipo de Rigging:</label>
-                    <select name="rigging_types" id="rigging_types-{{ rigging.id }}" required>
+                    <label for="type_rigging">Tipo de Rigging:</label>
+                    <select name="type_rigging" id="type_rigging-{{ rigging.type_rigging.id }}" required>
                         {% for type in rigging_types %}
-                            <option value="{{ type.id }}">{{ type.name }}</option>
+                            <option value="{{ type.id }}"
+                                    {% if rigging.type_rigging.id == type.id %}selected{% endif %}>
+                                {{ type.name }}
+                            </option>
                         {% endfor %}
                     </select><br>
+
 
                     <label for="description">Descripción:</label>
                     <textarea name="description" id="description">{{ rigging.description }}</textarea>

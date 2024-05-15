@@ -6,11 +6,11 @@ from extensions import db
 rigging_bp = Blueprint('rigging', __name__)
 
 
-
 @rigging_bp.route('/rigging')
 def list_rigging():
     rigging = Rigging.query.all()
     return render_template('rigging.html', rigging=rigging)
+
 
 @rigging_bp.route('/rigging/<int:rigging_id>')
 @login_required
@@ -83,8 +83,6 @@ def rigging_add(component_id=None):
                            rigging_types=rigging_types, preselected_component_id=component_id)
 
 
-
-
 @rigging_bp.route('/rigging/edit/<int:rigging_id>', methods=['GET', 'POST'])
 @login_required
 def edit_rigging(rigging_id):
@@ -96,12 +94,10 @@ def edit_rigging(rigging_id):
         selected_value = request.form.get('serial_numbers')
 
         rig_id = None
-        component_id = rigging.component.id or None
+        component_id = rigging.component.id if rigging.component else None
 
         if selected_value:
             selection_type, selection_id = selected_value.split('-')
-
-
             if selection_type == "Component":
                 component = Component.query.get(int(selection_id))
                 if component:
@@ -118,7 +114,6 @@ def edit_rigging(rigging_id):
         rigging.component_id = component_id
         rigging.rig_id = rig_id
 
-        # Verificar que el type_rigging_id sea un entero válido y no nulo antes de hacer la consulta
         if type_rigging_id:
             try:
                 type_rigging_id = int(type_rigging_id)
@@ -127,10 +122,13 @@ def edit_rigging(rigging_id):
                     rigging.type_rigging = rigging_type
                 else:
                     flash('Tipo de rigging no encontrado.', 'error')
+                    return redirect(url_for('rigging.edit_rigging', rigging_id=rigging_id))
             except ValueError:
                 flash('ID de tipo de rigging inválido.', 'error')
+                return redirect(url_for('rigging.edit_rigging', rigging_id=rigging_id))
         else:
             flash('ID de tipo de rigging no proporcionado.', 'error')
+            return redirect(url_for('rigging.edit_rigging', rigging_id=rigging_id))
 
         db.session.commit()
         flash('Rigging actualizado correctamente.', 'success')
@@ -138,11 +136,10 @@ def edit_rigging(rigging_id):
 
     components = Component.query.all()
     rigs = Rig.query.all()
-    type_rigging = RiggingType.query.all()
+    rigging_types = RiggingType.query.all()
 
     return render_template('edit_rigging.html', rigging=rigging, components=components,
-                           rigs=rigs, type_rigging=type_rigging)
-
+                           rigs=rigs, rigging_types=rigging_types)
 
 
 @rigging_bp.route('/rigging/delete/<int:rigging_id>', methods=['POST'])
