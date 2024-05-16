@@ -8,7 +8,7 @@ manufacturers_bp = Blueprint('manifacturers', __name__)
 @manufacturers_bp.route('/manufacturers')
 def view_manufacturers():
     manufacturers = Manufacturer.query.all()
-    return render_template('view_manufacturers.html', manufacturers=manufacturers)
+    return render_template('manufacturers/view_manufacturers.html', manufacturers=manufacturers)
 
 
 @manufacturers_bp.route('/manufacturer/add', methods=['GET', 'POST'])
@@ -20,7 +20,7 @@ def add_manufacturer():
         db.session.add(new_manufacturer)
         db.session.commit()
         message = "New manufacturer added successfully."
-    return render_template('add_manufacturer.html', message=message)
+    return render_template('manufacturers/add_manufacturer.html', message=message)
 
 
 @manufacturers_bp.route('/manufacturer/edit/<int:id>', methods=['GET', 'POST'])
@@ -30,7 +30,7 @@ def edit_manufacturer(id):
         manufacturer.manufacturer = request.form['manufacturer']
         db.session.commit()
         return redirect(url_for('view_manufacturers'))
-    return render_template('edit_manufacturer.html', manufacturer=manufacturer)
+    return render_template('manufacturers/edit_manufacturer.html', manufacturer=manufacturer)
 
 
 @manufacturers_bp.route('/manufacturer/delete/<int:id>', methods=['POST'])

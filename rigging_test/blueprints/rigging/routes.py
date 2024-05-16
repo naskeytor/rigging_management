@@ -9,7 +9,7 @@ rigging_bp = Blueprint('rigging', __name__)
 @rigging_bp.route('/rigging')
 def list_rigging():
     rigging = Rigging.query.all()
-    return render_template('rigging.html', rigging=rigging)
+    return render_template('rigging/rigging.html', rigging=rigging)
 
 
 @rigging_bp.route('/rigging/<int:rigging_id>')
@@ -23,7 +23,7 @@ def show_rigging(rigging_id):
     component_type = rigging.component
     description = rigging.description
 
-    return render_template('show_rigging.html', rigging=rigging,
+    return render_template('rigging/show_rigging.html', rigging=rigging,
                            rigging_date=rigging_date, rigging_rigger=rigging_rigger,
                            type_rigging=type_rigging, serial_number=serial_number, component_type=component_type,
                            description=description)
@@ -138,7 +138,7 @@ def edit_rigging(rigging_id):
     rigs = Rig.query.all()
     rigging_types = RiggingType.query.all()
 
-    return render_template('edit_rigging.html', rigging=rigging, components=components,
+    return render_template('rigging/edit_rigging.html', rigging=rigging, components=components,
                            rigs=rigs, rigging_types=rigging_types)
 
 

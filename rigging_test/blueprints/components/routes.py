@@ -25,7 +25,7 @@ def view_components(component_type=None):
         components = Component.query.all()
         title = "Todos los Componentes"
 
-    return render_template('view_components.html', components=components, title=title, is_aad=is_aad,
+    return render_template('components/view_components.html', components=components, title=title, is_aad=is_aad,
                            component_types=component_types, component_sizes=component_sizes,
                            component_statuses=component_statuses, component_models=component_models,
                            type_rigging=type_rigging)
@@ -41,7 +41,7 @@ def show_component(component_id):
     type_rigging = RiggingType.query.all()
     riggings = Rigging.query.filter_by(component_id=component.id).order_by(Rigging.date.desc()).all()
 
-    return render_template('show_component.html', component=component, riggings=riggings,
+    return render_template('components/show_component.html', component=component, riggings=riggings,
                            component_types=component_types, component_sizes=component_sizes,
                            component_statuses=component_statuses, component_models=component_models)
 
@@ -72,7 +72,7 @@ def add_component():
     component_sizes = Size.query.all()
     component_statuses = Status.query.all()
     component_models = Model.query.all()
-    return render_template('add_component.html',
+    return render_template('templates/add_component.html',
                            component_types=component_types,
                            component_sizes=component_sizes,
                            component_statuses=component_statuses,
@@ -98,7 +98,7 @@ def edit_component(id):
         db.session.commit()
         return redirect(url_for('components.view_components', component_type=component_type))
 
-    return render_template('edit_component.html',
+    return render_template('templates/edit_component.html',
                            component=component,
                            component_types=component_types,
                            component_sizes=component_sizes,

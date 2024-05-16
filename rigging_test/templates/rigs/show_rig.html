@@ -22,7 +22,7 @@
                     Editar
                 </button>
                 <!-- Botón para eliminar -->
-                <form action="{{ url_for('delete_rig', rig_id=rig.id) }}" method="post" style="display: inline;">
+                <form action="{{ url_for('rigs.delete_rig', rig_id=rig.id) }}" method="post" style="display: inline;">
                     <input type="submit" value="Delete" class="btn btn-danger"
                            onclick="return confirm('Are you sure?')">
                 </form>
@@ -51,7 +51,7 @@
                 <tr>
                     <th>Canopy</th>
                     <td>
-                        <a href="{{ url_for('show_component', component_id=rig.canopy.id) }}">{{ rig.canopy.serial_number }}</a>
+                        <a href="{{ url_for('components.show_component', component_id=rig.canopy.id) }}">{{ rig.canopy.serial_number }}</a>
                     </td>
                 </tr>
             {% endif %}
@@ -59,7 +59,7 @@
                 <tr>
                     <th>Container</th>
                     <td>
-                        <a href="{{ url_for('show_component', component_id=rig.container.id) }}">{{ rig.container.serial_number }}</a>
+                        <a href="{{ url_for('components.show_component', component_id=rig.container.id) }}">{{ rig.container.serial_number }}</a>
                     </td>
                 </tr>
             {% endif %}
@@ -67,7 +67,7 @@
                 <tr>
                     <th>Reserve</th>
                     <td>
-                        <a href="{{ url_for('show_component', component_id=rig.reserve.id) }}">{{ rig.reserve.serial_number }}</a>
+                        <a href="{{ url_for('components.show_component', component_id=rig.reserve.id) }}">{{ rig.reserve.serial_number }}</a>
                     </td>
                 </tr>
             {% endif %}
@@ -75,7 +75,7 @@
                 <tr>
                     <th>AAD</th>
                     <td>
-                        <a href="{{ url_for('show_component', component_id=rig.aad.id) }}">{{ rig.aad.serial_number }}</a>
+                        <a href="{{ url_for('components.show_component', component_id=rig.aad.id) }}">{{ rig.aad.serial_number }}</a>
                     </td>
                 </tr>
             {% endif %}
@@ -90,7 +90,7 @@
     <div class="modal fade" id="editRigModal" tabindex="-1" role="dialog"
          aria-labelledby="editRigModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form action="{{ url_for('edit_rig', rig_id=rig.id) }}" method="post">
+            <form action="{{ url_for('rigs.edit_rig', rig_id=rig.id) }}" method="post">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editRigModalLabel">Edit Rig</h5>
