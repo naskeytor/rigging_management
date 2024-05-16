@@ -8,7 +8,7 @@ statuses_bp = Blueprint('statuses', __name__)
 @statuses_bp.route('/statuses')
 def view_statuses():
     statuses = Status.query.all()
-    return render_template('view_statuses.html', statuses=statuses)
+    return render_template('statuses/view_statuses.html', statuses=statuses)
 
 
 @statuses_bp.route('/status/add', methods=['GET', 'POST'])
@@ -19,7 +19,7 @@ def add_status():
         db.session.add(new_status)
         db.session.commit()
         message = "New status added successfully."
-    return render_template('add_status.html', message=message)
+    return render_template('statuses/add_status.html', message=message)
 
 
 @statuses_bp.route('/status/edit/<int:id>', methods=['GET', 'POST'])
@@ -29,7 +29,7 @@ def edit_status(id):
         status.status = request.form['status']
         db.session.commit()
         return redirect(url_for('view_statuses'))
-    return render_template('edit_status.html', status=status)
+    return render_template('statuses/edit_status.html', status=status)
 
 
 @statuses_bp.route('/status/delete/<int:id>', methods=['POST'])

@@ -9,7 +9,7 @@ rigs_bp = Blueprint('rigs', __name__)
 @rigs_bp.route('/rigs')
 def list_rigs():
     rigs = Rig.query.all()
-    return render_template('rigs.html', rigs=rigs)
+    return render_template('rigs/rigs.html', rigs=rigs)
 
 
 @rigs_bp.route('/rig/<int:rig_id>')
@@ -25,7 +25,7 @@ def show_rig(rig_id):
     riggings = Rigging.query.filter((Rigging.rig_id == rig_id) | (Rigging.serial_numbers == rig.rig_number)).order_by(
         Rigging.date.desc()).all()
 
-    return render_template('show_rig.html', rig=rig, riggings=riggings, canopy_serial=canopy_serial,
+    return render_template('rigs/show_rig.html', rig=rig, riggings=riggings, canopy_serial=canopy_serial,
                            container_serial=container_serial, reserve_serial=reserve_serial, aad_serial=aad_serial)
 
 
@@ -40,7 +40,7 @@ def add_rig():
         if existing_rig:
             error_message = "El número de rig ya existe. Por favor, elige otro."
             # Renderiza nuevamente el formulario con el mensaje de error y los datos necesarios para el formulario
-            return render_template('add_rig.html', error_message=error_message)
+            return render_template('rigs/add_rig.html', error_message=error_message)
 
         new_rig = Rig(rig_number=rig_number)
 
@@ -99,7 +99,7 @@ def edit_rig(rig_id):
         existing_rig = Rig.query.filter_by(rig_number=rig_number).first()
         if existing_rig and existing_rig.id != rig.id:
             print("El número de rig ya existe. Por favor, elige otro.")
-            return render_template('edit_rig.html', rig=rig)
+            return render_template('rigs/edit_rig.html', rig=rig)
 
         rig.rig_number = rig_number
 
@@ -140,6 +140,6 @@ def edit_rig(rig_id):
         return redirect(url_for('list_rigs'))
     else:
         available_canopies, available_containers, available_reserves, available_aads = prepare_component_data()
-        return render_template('edit_rig.html', available_canopies=available_canopies,
+        return render_template('rigs/edit_rig.html', available_canopies=available_canopies,
                                available_containers=available_containers, available_reserves=available_reserves,
                                available_aads=available_aads, rig=rig, _anchor='riggingTab')

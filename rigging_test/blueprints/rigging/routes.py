@@ -9,7 +9,7 @@ rigging_bp = Blueprint('rigging', __name__)
 @rigging_bp.route('/rigging')
 def list_rigging():
     rigging = Rigging.query.all()
-    return render_template('rigging.html', rigging=rigging)
+    return render_template('rigging/rigging.html', rigging=rigging)
 
 
 @rigging_bp.route('/rigging/<int:rigging_id>')
@@ -23,7 +23,7 @@ def show_rigging(rigging_id):
     component_type = rigging.component
     description = rigging.description
 
-    return render_template('show_rigging.html', rigging=rigging,
+    return render_template('rigging/show_rigging.html', rigging=rigging,
                            rigging_date=rigging_date, rigging_rigger=rigging_rigger,
                            type_rigging=type_rigging, serial_number=serial_number, component_type=component_type,
                            description=description)
@@ -42,14 +42,13 @@ def rigging_add(component_id=None):
         serial_numbers = ''
 
         rig_id = None
-        component_id = component_id or None
 
+        # Maneja el caso donde component_id es proporcionado como parámetro de URL
         if component_id:
             component = Component.query.get(int(component_id))
             if component:
                 serial_numbers = component.serial_number
-                component_id = component.id
-        else:
+        elif selected_value:
             selection_type, selection_id = selected_value.split('-')
 
             if selection_type == "Component":
@@ -66,8 +65,15 @@ def rigging_add(component_id=None):
         rigger_id = current_user.id if 'rigger' in [role.name for role in current_user.roles] else None
 
         if rig_id or component_id:
-            new_rigging = Rigging(date=date, serial_numbers=serial_numbers, rig_id=rig_id, description=description,
-                                  component_id=component_id, rigger_id=rigger_id, type_rigging=type_rigging)
+            new_rigging = Rigging(
+                date=date,
+                serial_numbers=serial_numbers,
+                rig_id=rig_id,
+                description=description,
+                component_id=component_id,
+                rigger_id=rigger_id,
+                type_rigging=type_rigging
+            )
             db.session.add(new_rigging)
             db.session.commit()
             flash('Rigging añadido correctamente.', 'success')
@@ -138,7 +144,7 @@ def edit_rigging(rigging_id):
     rigs = Rig.query.all()
     rigging_types = RiggingType.query.all()
 
-    return render_template('edit_rigging.html', rigging=rigging, components=components,
+    return render_template('rigging/edit_rigging.html', rigging=rigging, components=components,
                            rigs=rigs, rigging_types=rigging_types)
 
 
