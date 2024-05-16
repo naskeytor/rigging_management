@@ -42,14 +42,13 @@ def rigging_add(component_id=None):
         serial_numbers = ''
 
         rig_id = None
-        component_id = component_id or None
 
+        # Maneja el caso donde component_id es proporcionado como parámetro de URL
         if component_id:
             component = Component.query.get(int(component_id))
             if component:
                 serial_numbers = component.serial_number
-                component_id = component.id
-        else:
+        elif selected_value:
             selection_type, selection_id = selected_value.split('-')
 
             if selection_type == "Component":
@@ -66,8 +65,15 @@ def rigging_add(component_id=None):
         rigger_id = current_user.id if 'rigger' in [role.name for role in current_user.roles] else None
 
         if rig_id or component_id:
-            new_rigging = Rigging(date=date, serial_numbers=serial_numbers, rig_id=rig_id, description=description,
-                                  component_id=component_id, rigger_id=rigger_id, type_rigging=type_rigging)
+            new_rigging = Rigging(
+                date=date,
+                serial_numbers=serial_numbers,
+                rig_id=rig_id,
+                description=description,
+                component_id=component_id,
+                rigger_id=rigger_id,
+                type_rigging=type_rigging
+            )
             db.session.add(new_rigging)
             db.session.commit()
             flash('Rigging añadido correctamente.', 'success')
