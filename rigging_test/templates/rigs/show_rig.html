@@ -83,6 +83,41 @@
 
         </table>
 
+        <div class="d-flex justify-content-between align-items-center">
+            <h3>Registros de Rigging</h3>
+            <!-- Botón para añadir un nuevo registro de rigging -->
+            <button type="button" class="btn btn-success" data-toggle="modal"
+                    data-target="#newRigRiggingRecordModal">
+                Añadir
+            </button>
+        </div>
+
+        <table class="full-width-table-rig-rigging" style="color: white;">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Rigger</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in riggings %}
+                <tr class="clickable-row" data-id="{{ item.id }}">
+                    <td>{{ item.id if item.id else '' }}</td>
+                    <td>{{ item.date if item.date else '' }}</td>
+                    <td>{{ item.rigger if item.rigger else '' }}</td>
+                    <td>{{ item.type_rigging.name if item.type_rigging else '' }}</td>
+                    <td>{{ item.description | default('') }}</td>
+                    <td>
+                        <a href="{{ url_for('rigging.show_rigging', rigging_id=item.id) }}">{{ item.description | default('') }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
         <!-- Aquí puedes agregar la sección de registros de rigging como en el componente, si es necesario -->
     </div>
 
@@ -146,4 +181,45 @@
             </form>
         </div>
     </div>
+
+    <!-- Modal para Nuevo Rigging record -->
+<div class="modal fade" id="newRigRiggingRecordModal" tabindex="-1" aria-labelledby="newRigRiggingRecordModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="{{ url_for('rigging.rigging_add') }}" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newRigRiggingRecordModalLabel">Add New Rigging</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="date">Fecha:</label>
+                    <input type="date" name="date" id="date" required><br>
+
+                    <label for="type_rigging">Tipo de Rigging:</label>
+                    <select name="type_rigging" id="type_rigging" required>
+                        {% for type in rigging_types %}
+                            <option value="{{ type.id }}">{{ type.name }}</option>
+                        {% endfor %}
+                    </select><br>
+
+                    <label for="serial_numbers">Seleccionar número de serie:</label>
+
+                    <input type="hidden" name="rig_id" value="{{ rig.id }}">
+º
+                    <label for="description">Descripción:</label>
+                    <textarea name="description" id="description">{{ rigging.description }}</textarea>
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Rig</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 {% endblock %}

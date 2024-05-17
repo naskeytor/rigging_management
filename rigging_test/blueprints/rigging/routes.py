@@ -80,12 +80,12 @@ def rigging_add(component_id=None):
         else:
             flash('Error al añadir Rigging: valor seleccionado inválido.', 'danger')
 
-        return redirect(url_for('rigging.list_rigging'))
+        return redirect(url_for('rigging.rigging_add', rig_id=rig_id))
 
     components = Component.query.all() if not component_id else [Component.query.get(int(component_id))]
     rigs = Rig.query.all()
     rigging_types = RiggingType.query.all()  # Obtienes todos los tipos de rigging
-    return render_template('index.html', components=components, rigs=rigs,
+    return render_template('rigging/rigging.html', components=components, rigs=rigs,
                            rigging_types=rigging_types, preselected_component_id=component_id)
 
 
