@@ -35,19 +35,19 @@ def show_rigging(rigging_id):
 def rigging_add(component_id=None):
     if request.method == 'POST':
         date = request.form.get('date')
-        type_rigging_id = request.form.get('type_rigging')  # Obtienes el ID
-        type_rigging = RiggingType.query.get(type_rigging_id)  # Conviertes el ID a la instancia de RiggingType
+        type_rigging_id = request.form.get('type_rigging')
+        type_rigging = RiggingType.query.get(type_rigging_id)
         selected_value = request.form.get('serial_numbers')
         description = request.form.get('description')
         serial_numbers = ''
-
-        rig_id = None
+        rig_id = request.form.get('rig_id')
 
         # Maneja el caso donde component_id es proporcionado como parámetro de URL
         if component_id:
             component = Component.query.get(int(component_id))
             if component:
                 serial_numbers = component.serial_number
+                rig_id = None  # Asegúrate de que rig_id es None si se proporciona component_id
         elif selected_value:
             selection_type, selection_id = selected_value.split('-')
 
@@ -56,11 +56,13 @@ def rigging_add(component_id=None):
                 serial_numbers = component.serial_number
                 if component:
                     component_id = component.id
+                    rig_id = None  # Asegúrate de que rig_id es None si se selecciona un componente
             elif selection_type == "Rig":
                 rig = Rig.query.get(int(selection_id))
                 serial_numbers = rig.rig_number
                 if rig:
                     rig_id = rig.id
+                    component_id = None  # Asegúrate de que component_id es None si se selecciona un rig
 
         rigger_id = current_user.id if 'rigger' in [role.name for role in current_user.roles] else None
 
@@ -76,17 +78,20 @@ def rigging_add(component_id=None):
             )
             db.session.add(new_rigging)
             db.session.commit()
-            flash('Rigging añadido correctamente.', 'success')
         else:
             flash('Error al añadir Rigging: valor seleccionado inválido.', 'danger')
 
-        return redirect(url_for('rigging.list_rigging'))
+        if rig_id:
+            return redirect(url_for('rigs.show_rig', rig_id=rig_id))
+        elif component_id:
+            return redirect(url_for('components.show_component', component_id=component_id))
 
     components = Component.query.all() if not component_id else [Component.query.get(int(component_id))]
     rigs = Rig.query.all()
-    rigging_types = RiggingType.query.all()  # Obtienes todos los tipos de rigging
+    rigging_types = RiggingType.query.all()
     return render_template('index.html', components=components, rigs=rigs,
                            rigging_types=rigging_types, preselected_component_id=component_id)
+
 
 
 @rigging_bp.route('/rigging/edit/<int:rigging_id>', methods=['GET', 'POST'])
