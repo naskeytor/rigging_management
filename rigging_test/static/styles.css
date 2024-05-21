@@ -159,5 +159,12 @@ html, body {
     min-height: calc(100vh - 60px);  /* Asegura una altura mínima y resta el margen superior e inferior */
 }
 
+.logout-link {
+    position: absolute;
+    top: 20px; /* Ajusta según sea necesario */
+    right: 20px; /* Ajusta según sea necesario */
+}
+
+
 
 
