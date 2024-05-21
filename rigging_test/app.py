@@ -11,6 +11,7 @@ def create_app():
 
     login_manager = LoginManager()
     login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'  # Redirige a la vista de login si no está autenticado
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -28,6 +29,7 @@ def create_app():
     from blueprints.statuses.routes import statuses_bp
     from blueprints.component_types.routes import component_types_bp
     from blueprints.models.routes import models_bp
+    from blueprints.main.routes import main_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(components_bp)
@@ -38,6 +40,7 @@ def create_app():
     app.register_blueprint(statuses_bp)
     app.register_blueprint(component_types_bp)
     app.register_blueprint(models_bp)
+    app.register_blueprint(main_bp)
 
     app.context_processor(inject_rigging)
     app.context_processor(inject_rigging_types)
