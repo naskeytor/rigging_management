@@ -46,6 +46,7 @@ def create_app():
     app.context_processor(inject_rigging_types)
     app.context_processor(inject_rigging_components)
     app.context_processor(inject_rigs)
+    app.context_processor(inject_component_processor)
 
     @app.route('/')
     def index():

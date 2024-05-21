@@ -5,7 +5,7 @@
 </head>
 <body>
     <h1>Add New Rig</h1>
-    <form action="{{ url_for('add_rig') }}" method="post">
+    <form action="{{ url_for('rigs.add_rig') }}" method="post">
 
         <label for="rig_number">Rig Number:</label>
         <input type="text" name="rig_number" id="rig_number" required>
@@ -44,6 +44,6 @@
 
         <input type="submit" value="Add Rig">
     </form>
-<a href="{{ url_for('list_rigs') }}">Back to Components</a>
+<a href="{{ url_for('rigs.list_rigs') }}">Back to Components</a>
 </body>
 </html>
