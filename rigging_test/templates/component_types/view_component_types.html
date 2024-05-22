@@ -1,22 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1>Component Types</h1>
-    <a href="{{ url_for('add_component_type') }}">New</a>
-    <ul>
-        {% for type in component_types %}
-        <li>{{ type.component_type }}
-            <a href="{{ url_for('edit_component_type', id=type.id) }}">Edit</a>
-            <form action="{{ url_for('delete_component_type', id=type.id) }}" method="post" style="display: inline;">
-                <input type="submit" value="Delete">
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Component Types</h1>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newTypeModal">New</button>
+        <table class="full-width-table-types">
+            <thead>
+            <tr>
+                <th>Component Type</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for type in component_types %}
+                <tr>
+                    <td>{{ type.component_type }}</td>
+                    <td>
+                        <form action="{{ url_for('component_types.delete_component_type', id=type.id) }}" method="post"
+                              style="display: inline;">
+                            <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Index</a>
+    </div>
+
+    <div class="modal fade" id="newTypeModal" tabindex="-1" aria-labelledby="newTypeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ url_for('component_types.add_component_type') }}" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTypeModalLabel">Add</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <form action="{{ url_for('component_types.add_component_type') }}" method="post">
+                            Component Type: <input type="text" name="component_type" required><br>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Registro</button>
+                    </div>
+                </div>
             </form>
-        </li>
-        {% endfor %}
-    </ul>
-    <a href="{{ url_for('index') }}">Back to Index</a>
-</body>
-</html>
+        </div>
+    </div>
+{% endblock %}
