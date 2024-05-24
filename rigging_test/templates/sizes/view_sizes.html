@@ -1,22 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1>Sizes</h1>
-    <a href="{{ url_for('add_size') }}">Add New Size</a>
-    <ul>
-        {% for size in sizes %}
-            <li>{{ size.size }}
-                <a href="{{ url_for('edit_size', id=size.id) }}">Edit</a>
-                <form action="{{ url_for('delete_size', id=size.id) }}" method="post" style="display: inline;">
-                    <input type="submit" value="Delete">
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
-    <a href="{{ url_for('index') }}">Back to Index</a>
-</body>
-</html>
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Component Sizes</h1>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newSizeModal">New</button>
+        <table class="full-width-table-sizes">
+            <thead>
+            <tr>
+                <th>Component Size</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for size in sizes %}
+                <tr>
+                    <td>{{ size.size }}</td>
+                    <td>
+                        <form action="{{ url_for('sizes.delete_size', id=size.id) }}" method="post"
+                              style="display: inline;">
+                            <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Index</a>
+    </div>
+
+    <div class="modal fade" id="newSizeModal" tabindex="-1" aria-labelledby="newSizeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ url_for('sizes.add_size') }}" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addSizeModalLabel">Add Size</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Component Size: <input type="text" name="size" required><br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Size</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

@@ -59,7 +59,7 @@ html, body {
 
 /* Estilos compartidos para ambas tablas */
 .full-width-table, .full-width-table-rig, .full-width-table-rigging, .full-width-table-rig-rigging,
-.full-width-table-component-rigging, .full-width-table-types {
+.full-width-table-component-rigging, .full-width-table-types, .full-width-table-sizes {
     width: 100%; /* La tabla ocupa todo el ancho disponible */
     border-collapse: collapse; /* Elimina el espacio entre las celdas */
     background-color: #343940; /* Color de fondo para las celdas de la tabla */
@@ -71,7 +71,7 @@ html, body {
 .full-width-table-rigging th, .full-width-table-rigging td,
 .full-width-table-component-rigging th, .full-width-table-component-rigging td,
 .full-width-table-rig-rigging th, .full-width-table-rig-rigging td,
-.full-width-table-types th, .full-width-table-types td {
+.full-width-table-types th, .full-width-table-types td, .full-width-table-sizes {
     color: white; /* Texto blanco para las celdas */
     padding: 10px; /* Espaciado interno en las celdas */
     border-bottom: 2px solid white; /* Línea divisoria blanca entre filas */
@@ -80,14 +80,14 @@ html, body {
 
 .full-width-table a, .full-width-table-rig a, .full-width-table-rigging a,
 .full-width-table-component-rigging a, .full-width-table-rig-rigging a,
-.full-width-table-types a {
+.full-width-table-types a, .full-width-table-sizes a {
     color: white; /* Asegura que los enlaces son blancos */
     text-decoration: none; /* Elimina el subrayado de los enlaces */
 }
 
 .full-width-table a:hover, .full-width-table-rig a:hover,
 .full-width-table-rigging a:hover, .full-width-table-component-rigging a:hover,
-.full-width-table-rig-rigging a:hover, .full-width-table-types a:hover {
+.full-width-table-rig-rigging a:hover, .full-width-table-types a:hover, .full-width-table-sizes a:hover {
     text-decoration: underline; /* Agrega subrayado al pasar el mouse para mejorar la interactividad */
 }
 
@@ -114,6 +114,10 @@ html, body {
 }
 
 .full-width-table-types tbody tr:hover {
+    background-color: #343940;
+}
+
+.full-width-table-sizes tbody tr:hover {
     background-color: #343940;
 }
 

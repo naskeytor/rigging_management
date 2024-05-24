@@ -19,7 +19,7 @@ def add_status():
         db.session.add(new_status)
         db.session.commit()
         message = "New status added successfully."
-    return render_template('statuses/add_status.html', message=message)
+    return redirect(url_for('statuses.view_statuses'))
 
 
 @statuses_bp.route('/status/edit/<int:id>', methods=['GET', 'POST'])
@@ -37,4 +37,4 @@ def delete_status(id):
     status = Status.query.get_or_404(id)
     db.session.delete(status)
     db.session.commit()
-    return redirect(url_for('view_statuses'))
+    return redirect(url_for('statuses.view_statuses'))

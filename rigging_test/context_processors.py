@@ -5,6 +5,10 @@ def inject_rigging_types():
     rigging_types = RiggingType.query.all()
     return dict(rigging_types=rigging_types)
 
+def inject_rigging_sizes():
+    rigging_sizes = RiggingType.query.all()
+    return dict(rigging_types=rigging_sizes)
+
 def inject_rigs():
     rigs = Rig.query.all()
     return dict(rigs=rigs)

@@ -1,22 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title> Status </title>
-</head>
-<body>
-    <h1>Statuses</h1>
-    <a href="{{ url_for('add_status') }}">Add New Status</a>
-    <ul>
-        {% for status in statuses %}
-            <li>{{ status.status }}
-                <a href="{{ url_for('edit_status', id=status.id) }}">Edit</a>
-                <form action="{{ url_for('delete_status', id=status.id) }}" method="post" style="display: inline;">
-                    <input type="submit" value="Delete">
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
-    <a href="{{ url_for('index') }}">Back to Index</a>
-</body>
-</html>
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Component Sizes</h1>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newStatusModal">New</button>
+        <table class="full-width-table-statuses">
+            <thead>
+            <tr>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for status in statuses %}
+                <tr>
+                    <td>{{ status.status }}</td>
+                    <td>
+                        <form action="{{ url_for('statuses.delete_status', id=status.id) }}" method="post"
+                              style="display: inline;">
+                            <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Index</a>
+    </div>
+
+    <div class="modal fade" id="newStatusModal" tabindex="-1" aria-labelledby="newStatusModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ url_for('statuses.add_status') }}" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addStatusModalLabel">Add Size</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Component Size: <input type="text" name="status" required><br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Size</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
