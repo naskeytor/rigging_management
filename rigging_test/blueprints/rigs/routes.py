@@ -40,7 +40,7 @@ def add_rig():
         if existing_rig:
             error_message = "El número de rig ya existe. Por favor, elige otro."
             # Renderiza nuevamente el formulario con el mensaje de error y los datos necesarios para el formulario
-            return render_template('rigs/add_rig.html', error_message=error_message)
+            return render_template('rigs/rigs.html', error_message=error_message)
 
         new_rig = Rig(rig_number=rig_number)
 
@@ -63,7 +63,7 @@ def add_rig():
 
         db.session.commit()
 
-        return redirect(url_for('list_rigs'))
+        return redirect(url_for('rigs.list_rigs'))
     else:
         # Preparación de los datos necesarios para el formulario
         available_canopies, available_containers, available_reserves, available_aads = prepare_component_data()
@@ -88,7 +88,7 @@ def delete_rig(rig_id):
 
     db.session.delete(rig)  # Eliminar el rig
     db.session.commit()  # Aplicar los cambios
-    return redirect(url_for('list_rigs'))
+    return redirect(url_for('rigs.list_rigs'))
 
 
 @rigs_bp.route('/rigs/edit/<int:rig_id>', methods=['GET', 'POST'])

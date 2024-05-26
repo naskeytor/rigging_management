@@ -72,7 +72,7 @@ def add_component():
     component_sizes = Size.query.all()
     component_statuses = Status.query.all()
     component_models = Model.query.all()
-    return render_template('templates/add_component.html',
+    return render_template('components/add_component.html',
                            component_types=component_types,
                            component_sizes=component_sizes,
                            component_statuses=component_statuses,

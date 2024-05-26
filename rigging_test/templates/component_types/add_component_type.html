@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>Add New Component Type</h1>
-    <form action="{{ url_for('add_component_type') }}" method="post">
+    <form action="{{ url_for('component_types.add_component_type') }}" method="post">
         Component Type: <input type="text" name="component_type" required><br>
         <input type="submit" value="Add Component Type">
     </form>

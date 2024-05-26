@@ -1,23 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title> View Manufacturers </title>
-</head>
-<body>
-    <h1> Manufacturer view </h1>
-    <a href="{{ url_for('add_manufacturer') }}">New</a>
-    <ul>
-        {% for manufacturer in manufacturers %}
-        <li>{{ manufacturer.manufacturer }}
-            <a href="{{ url_for('edit_manufacturer', id=manufacturer.id) }}">Edit</a>
-            <!-- Forma de Eliminación -->
-            <form action="{{ url_for('delete_manufacturer', id=manufacturer.id) }}" method="post" style="display: inline;">
-                <input type="submit" value="Delete">
+{% extends 'index.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Manufacturers</h1>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newManufacturerModal">New</button>
+        <table class="full-width-table-manufacturers">
+            <thead>
+            <tr>
+                <th>Manufacturer</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for manufacturer in manufacturers %}
+                <tr>
+                    <td>{{ manufacturer.manufacturer }}</td>
+                    <td>
+                        <form action="{{ url_for('manufacturers.delete_manufacturer', id=manufacturer.id) }}" method="post"
+                              style="display: inline;">
+                            <input type="submit" value="Delete" class="btn btn-sm btn-danger">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Index</a>
+    </div>
+
+    <div class="modal fade" id="newManufacturerModal" tabindex="-1" aria-labelledby="newManufacturerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ url_for('manufacturers.add_manufacturer') }}" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addManufacturerModalLabel">Add Manufacturer</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Component Manufacturer: <input type="text" name="manufacturer" required><br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
             </form>
-        </li>
-        {% endfor %}
-    </ul>
-    <a href="{{ url_for('index') }}">Back to Index</a>
-</body>
-</html>
+        </div>
+    </div>
+
+{% endblock %}

@@ -4,28 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rigging Management</title>
-    <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Estilos personalizados -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 <body>
 <div class="navbar">
     <h1>Rigging Management</h1>
+    <div class="logout-link">
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-link">Logout</a>
+    </div>
 </div>
 
 <div class="container">
 
-    <div class="tabs">
-        <ul>
-            <li><a href="/rigs">Rigs</a></li>
-            <li><a href="/components/Canopy">Canopies</a></li>
-            <li><a href="/components/Container">Containers</a></li>
-            <li><a href="/components/Reserve">Reserves</a></li>
-            <li><a href="/components/Aad">AAD</a></li>
-            <li><a href="/components">Components</a></li>
-            <li><a href="/rigging">Rigging</a></li>
-        </ul>
-    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Rigging Management</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="/rigs">Rigs</a></li>
+                <li class="nav-item"><a class="nav-link" href="/components/Canopy">Canopies</a></li>
+                <li class="nav-item"><a class="nav-link" href="/components/Container">Containers</a></li>
+                <li class="nav-item"><a class="nav-link" href="/components/Reserve">Reserves</a></li>
+                <li class="nav-item"><a class="nav-link" href="/components/Aad">AAD</a></li>
+                <li class="nav-item"><a class="nav-link" href="/components">Components</a></li>
+                <li class="nav-item"><a class="nav-link" href="/rigging">Rigging</a></li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        More
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="/component_types">Component Types</a>
+                        <a class="dropdown-item" href="/sizes">Sizes</a>
+                        <a class="dropdown-item" href="/statuses">Statuses</a>
+                        <a class="dropdown-item" href="/manufacturers">Manufacturers</a>
+                        <a class="dropdown-item" href="/models">Models</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="action-bar">
         <div class="action-bar-right">
             {% if request.path == "/rigs" %}
@@ -261,6 +285,9 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+
 
 </body>
 </html>

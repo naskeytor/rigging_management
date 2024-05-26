@@ -3,7 +3,8 @@ from extensions import db, migrate
 from flask_login import LoginManager
 from models.models import User, Role, Manufacturer, Size, Status, ComponentType, Model, Component, Rig, Rigging, RiggingType
 from config import DevelopmentConfig
-from context_processors import inject_rigging_types, inject_rigs, inject_rigging, inject_rigging_components, inject_component_processor
+from context_processors import (inject_rigging_types, inject_rigs, inject_rigging_sizes, inject_manufacturers,
+                                inject_rigging, inject_rigging_components, inject_component_processor)
 
 def create_app():
     app = Flask(__name__)
@@ -11,6 +12,7 @@ def create_app():
 
     login_manager = LoginManager()
     login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'  # Redirige a la vista de login si no está autenticado
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -28,6 +30,7 @@ def create_app():
     from blueprints.statuses.routes import statuses_bp
     from blueprints.component_types.routes import component_types_bp
     from blueprints.models.routes import models_bp
+    from blueprints.main.routes import main_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(components_bp)
@@ -38,11 +41,15 @@ def create_app():
     app.register_blueprint(statuses_bp)
     app.register_blueprint(component_types_bp)
     app.register_blueprint(models_bp)
+    app.register_blueprint(main_bp)
 
     app.context_processor(inject_rigging)
     app.context_processor(inject_rigging_types)
     app.context_processor(inject_rigging_components)
     app.context_processor(inject_rigs)
+    app.context_processor(inject_component_processor)
+    app.context_processor(inject_rigging_sizes)
+    app.context_processor(inject_manufacturers)
 
     @app.route('/')
     def index():

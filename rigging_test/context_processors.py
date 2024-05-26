@@ -1,9 +1,13 @@
-from models.models import RiggingType, Rig, Rigging, Component
+from models.models import RiggingType, Rig, Rigging, Component, Manufacturer
 from utilities import prepare_component_data
 
 def inject_rigging_types():
     rigging_types = RiggingType.query.all()
     return dict(rigging_types=rigging_types)
+
+def inject_rigging_sizes():
+    rigging_sizes = RiggingType.query.all()
+    return dict(rigging_types=rigging_sizes)
 
 def inject_rigs():
     rigs = Rig.query.all()
@@ -12,6 +16,10 @@ def inject_rigs():
 def inject_rigging():
     rigging = Rigging.query.all()
     return dict(rigging=rigging)
+
+def inject_manufacturers():
+    manufacturers = Manufacturer.query.all()
+    return dict(manufacturers=manufacturers)
 
 def inject_rigging_components(component_id=None):
     components = Component.query.all() if not component_id else [Component.query.get(int(component_id))]
