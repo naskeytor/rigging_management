@@ -22,7 +22,7 @@ def add_model():
         return redirect(url_for('models.view_models'))
 
     manufacturers = Manufacturer.query.all()
-    return render_template('models/add_model.html', manufacturers=manufacturers)
+    return redirect(url_for('models.view_models'))
 
 @models_bp.route('/model/edit/<int:id>', methods=['GET', 'POST'])
 def edit_model(id):
