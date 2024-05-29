@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
-from models.models import Component, ComponentType, Size, Status, Model, RiggingType, Rigging, Manufacturer, Rig
+from models.models import (Component, ComponentType, Size, Status, Model, RiggingType,
+                           rig_component_association, Rigging, Manufacturer, Rig)
 from extensions import db
 
 components_bp = Blueprint('components', __name__)
@@ -111,3 +112,23 @@ def delete_component(id):
     db.session.delete(component)
     db.session.commit()
     return redirect(url_for('components.view_components'))
+
+@components_bp.route('/component/umount/<int:component_id>', methods=['POST'])
+def umount_component(component_id):
+
+    component = Component.query.get_or_404(component_id)
+    rig_id = None
+    for rig in component.rigs:
+        rig_id = rig.id
+        break
+
+    if rig_id:
+        stmt = rig_component_association.delete().where(
+            rig_component_association.c.rig_id == rig_id,
+            rig_component_association.c.component_id == component_id
+        )
+        db.session.execute(stmt)
+        db.session.commit()
+
+    return redirect(url_for('components.view_components'))
+

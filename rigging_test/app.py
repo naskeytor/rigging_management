@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from extensions import db, migrate
 from flask_login import LoginManager
-from models.models import User, Role, Manufacturer, Size, Status, ComponentType, Model, Component, Rig, Rigging, RiggingType
+from models.models import User
 from config import DevelopmentConfig
 from context_processors import (inject_rigging_types, inject_rigs, inject_rigging_sizes, inject_manufacturers,
                                 inject_rigging, inject_rigging_components, inject_component_processor)
@@ -50,6 +50,7 @@ def create_app():
     app.context_processor(inject_component_processor)
     app.context_processor(inject_rigging_sizes)
     app.context_processor(inject_manufacturers)
+
 
     @app.route('/')
     def index():

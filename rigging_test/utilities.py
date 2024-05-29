@@ -17,10 +17,10 @@ def prepare_component_data():
     aad_type_id = ComponentType.query.filter_by(component_type='Aad').first().id
 
     # Luego, basándonos en esos IDs, filtraríamos los componentes disponibles por tipo.
-    available_canopies = Component.query.filter_by(component_type_id=canopy_type_id, rig_id=None).all()
-    available_containers = Component.query.filter_by(component_type_id=container_type_id, rig_id=None).all()
-    available_reserves = Component.query.filter_by(component_type_id=reserve_type_id, rig_id=None).all()
-    available_aads = Component.query.filter_by(component_type_id=aad_type_id, rig_id=None).all()
+    available_canopies = Component.query.filter_by(component_type_id=canopy_type_id, rigs=None).all()
+    available_containers = Component.query.filter_by(component_type_id=container_type_id, rigs=None).all()
+    available_reserves = Component.query.filter_by(component_type_id=reserve_type_id, rigs=None).all()
+    available_aads = Component.query.filter_by(component_type_id=aad_type_id, rigs=None).all()
 
 
     # Devolvemos los conjuntos de datos para cada tipo de componente.

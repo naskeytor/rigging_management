@@ -137,7 +137,7 @@ def edit_rig(rig_id):
 
         db.session.commit()
         print("Rig actualizado con éxito")
-        return redirect(url_for('list_rigs'))
+        return redirect(url_for('rigs.list_rigs'))
     else:
         available_canopies, available_containers, available_reserves, available_aads = prepare_component_data()
         return render_template('rigs/edit_rig.html', available_canopies=available_canopies,
