@@ -113,8 +113,14 @@ def delete_component(id):
     db.session.commit()
     return redirect(url_for('components.view_components'))
 
+
 @components_bp.route('/component/umount/<int:component_id>', methods=['POST'])
 def umount_component(component_id):
+    current_aad_jumps = request.form.get('current_aad_jumps', type=int)
+
+    if current_aad_jumps is None:
+        flash('Current AAD jumps is required.', 'danger')
+        return redirect(url_for('components.show_component', component_id=component_id))
 
     component = Component.query.get_or_404(component_id)
     rig_id = None
@@ -123,6 +129,9 @@ def umount_component(component_id):
         break
 
     if rig_id:
+        # Realiza los cálculos necesarios
+        component.jumps += current_aad_jumps - component.aad_jumps_on_mount
+
         stmt = rig_component_association.delete().where(
             rig_component_association.c.rig_id == rig_id,
             rig_component_association.c.component_id == component_id
