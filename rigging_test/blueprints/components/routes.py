@@ -116,22 +116,29 @@ def delete_component(id):
 
 @components_bp.route('/component/umount/<int:component_id>', methods=['POST'])
 def umount_component(component_id):
-    current_aad_jumps = request.form.get('current_aad_jumps', type=int)
-
-    if current_aad_jumps is None:
-        flash('Current AAD jumps is required.', 'danger')
-        return redirect(url_for('components.show_component', component_id=component_id))
-
     component = Component.query.get_or_404(component_id)
     rig_id = None
     for rig in component.rigs:
         rig_id = rig.id
         break
 
-    if rig_id:
-        # Realiza los cálculos necesarios
-        component.jumps += current_aad_jumps - component.aad_jumps_on_mount
+    # Obtener el valor de current_aad_jumps si está disponible
+    current_aad_jumps = request.form.get('current_aad_jumps', type=int)
 
+    if component.component_type.component_type in ['Canopy', 'Container'] and current_aad_jumps is not None:
+        # Realiza los cálculos necesarios con current_aad_jumps
+        component.jumps += (current_aad_jumps - component.aad_jumps_on_mount)
+    elif component.component_type.component_type in['Aad'] and current_aad_jumps is not None:
+        for rig in component.rigs:
+            for comp in rig.components:
+                if comp.component_type.component_type in ['Canopy', 'Container']:
+                    comp.jumps += current_aad_jumps - comp.aad_jumps_on_mount
+                    db.session.add(comp)
+                elif comp.component_type.component_type in ['Aad']:
+                    comp.jumps = current_aad_jumps
+
+
+    if rig_id:
         stmt = rig_component_association.delete().where(
             rig_component_association.c.rig_id == rig_id,
             rig_component_association.c.component_id == component_id
@@ -140,4 +147,9 @@ def umount_component(component_id):
         db.session.commit()
 
     return redirect(url_for('components.view_components'))
+
+#@components_bp.route('/component/mount/<int:component.id>', methods=['POST'])
+#def mount_component(component_id):
+#   pass"""
+
 

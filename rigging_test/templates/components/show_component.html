@@ -7,13 +7,23 @@
             <div>
                 {% if component.rigs %}
                     {% for rig in component.rigs %}
-                        <!-- Button to trigger the modal -->
-                        <button type="button" class="btn btn-danger" data-toggle="modal"
-                                data-target="#umountModal_{{ rig.id }}">
-                            Dismount from Rig {{ rig.rig_number }}
-                        </button>
+                        {% if component.component_type.component_type == 'Reserve' %}
+                            <form action="{{ url_for('components.umount_component', component_id=component.id) }}"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to umount this component?');">
+                                <button type="submit" class="btn btn-danger">Umount</button>
+                            </form>
+                        {% else %}
+                            <!-- Button to trigger the modal -->
+                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                    data-target="#umountModal_{{ rig.id }}">
+                                Umount
+                            </button>
+                        {% endif %}
+                    {% endfor %}
 
-                        <!-- Modal -->
+                    {% for rig in component.rigs %}
+                        <!-- Modal for non-Reserve components -->
                         <div class="modal fade" id="umountModal_{{ rig.id }}" tabindex="-1"
                              aria-labelledby="umountModalLabel_{{ rig.id }}" aria-hidden="true">
                             <div class="modal-dialog">
@@ -29,11 +39,17 @@
                                         <form id="umountForm_{{ rig.id }}"
                                               action="{{ url_for('components.umount_component', component_id=component.id) }}"
                                               method="post">
-                                            <div class="form-group">
-                                                <label for="current_aad_jumps_{{ rig.id }}">Current AAD Jumps</label>
-                                                <input type="number" class="form-control" name="current_aad_jumps"
-                                                       id="current_aad_jumps_{{ rig.id }}" required>
-                                            </div>
+                                            {% if component.component_type.component_type not in ['Reserve'] %}
+                                                <div class="form-group">
+                                                    <label for="current_aad_jumps_{{ rig.id }}" style="color: black;">Current
+                                                        AAD Jumps</label>
+                                                    <input type="number" class="form-control" name="current_aad_jumps"
+                                                           id="current_aad_jumps_{{ rig.id }}"
+                                                           {% if component.component_type.component_type != 'Reserve' %}required{% endif %}>
+                                                </div>
+                                            {% endif %}
+                                            <input type="hidden" name="component_type"
+                                                   value="{{ component.component_type.component_type }}">
                                         </form>
                                     </div>
                                     <div class="modal-footer">
@@ -48,6 +64,7 @@
                             </div>
                         </div>
                     {% endfor %}
+
                 {% endif %}
 
 
