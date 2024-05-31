@@ -24,6 +24,7 @@
                 <td>{{ component.rig.rig_number if component.rig else '' }}</td>
                 <td>{{ component.component_status | default('', true) }}</td>
             </tr>
+
         {% endfor %}
         </tbody>
     </table>

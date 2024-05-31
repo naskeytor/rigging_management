@@ -103,9 +103,13 @@ class Component(db.Model):
     size_id = Column(Integer, ForeignKey('size.id'), nullable=True)
     sizes = relationship('Size', back_populates='components')
     status_id = Column(Integer, ForeignKey('status.id'), nullable=True)
+    #rigs = relationship('Rig', secondary=rig_component_association, back_populates="components")
+    #rig = relationship('Rig', backref=db.backref('direct_components', lazy='dynamic', cascade="all, delete-orphan"))
+    #rig_id = Column(Integer, ForeignKey('rig.id'), nullable=True)
     rigs = relationship('Rig', secondary=rig_component_association, back_populates="components")
-    rig = relationship('Rig', backref=db.backref('direct_components', lazy='dynamic', cascade="all, delete-orphan"))
-    rig_id = Column(Integer, ForeignKey('rig.id'), nullable=True)
+    jumps = Column(Integer, nullable=False, default=0)
+    aad_jumps_on_mount = Column(Integer, nullable=False, default=0)
+
 
     def __repr__(self):
         return f'<Component {self.serial_number}>'
@@ -114,6 +118,7 @@ class Rig(db.Model):
     id = Column(Integer, primary_key=True)
     rig_number = Column(String(10), nullable=False)
     components = relationship('Component', secondary=rig_component_association, back_populates="rigs")
+    current_aad_jumps = Column(Integer, nullable=False, default=0)
 
     @property
     def canopy(self):
