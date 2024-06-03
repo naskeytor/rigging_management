@@ -20,9 +20,7 @@
                                 Umount
                             </button>
                         {% endif %}
-                    {% endfor %}
 
-                    {% for rig in component.rigs %}
                         <!-- Modal for non-Reserve components -->
                         <div class="modal fade" id="umountModal_{{ rig.id }}" tabindex="-1"
                              aria-labelledby="umountModalLabel_{{ rig.id }}" aria-hidden="true">
@@ -64,19 +62,65 @@
                             </div>
                         </div>
                     {% endfor %}
+                {% else %}
+                    <button type="button" class="btn btn-success" data-toggle="modal"
+                            data-target="#mountComponentModal">
+                        Mount Component
+                    </button>
 
+                    <!-- Modal for mounting component -->
+                    <div class="modal fade" id="mountComponentModal" tabindex="-1"
+                         aria-labelledby="mountComponentModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="mountComponentModalLabel">Mount Component</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="mountForm"
+                                          action="{{ url_for('components.mount_component', component_id=component.id) }}"
+                                          method="post">
+                                        <div class="form-group" style="color: black">
+                                            <label for="rig_id">Select Rig</label>
+                                            <select class="form-control" name="rig_id" id="rig_id" required>
+                                                {% for rig in available_rigs %}
+                                                    <option value="{{ rig.id }}">{{ rig.rig_number }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        {% if component.component_type.component_type != 'Reserve' %}
+                                            <div class="form-group" style="color: black">
+                                                <label for="current_aad_jumps">Aad jump record</label>
+                                                <input type="number" class="form-control" name="current_aad_jumps"
+                                                       id="current_aad_jumps">
+                                            </div>
+                                        {% endif %}
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                            </button>
+                                            <button type="submit" class="btn btn-primary"
+                                                    onclick="document.getElementById('mountForm').submit();">Save
+                                            </button>
+                                        </div>
+                                        <!-- Hidden field to pass the component ID -->
+                                        <input type="hidden" name="component_id" value="{{ component.id }}">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% endif %}
-
-
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editComponentModal">
-                    Editar
-                </button>
-                <!-- Botón para eliminar -->
-                <form action="{{ url_for('components.delete_component', id=component.id) }}" method="post"
-                      style="display: inline;">
-                    <input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Sure?')">
-                </form>
             </div>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editComponentModal">Edit
+            </button>
+            <form action="{{ url_for('components.delete_component', id=component.id) }}" method="post"
+                  style="display: inline;">
+                <input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Sure?')">
+            </form>
+
         </div>
         <table class="table table-bordered" style="color: white;">
             <tbody>
