@@ -42,9 +42,25 @@ def show_component(component_id):
     type_rigging = RiggingType.query.all()
     riggings = Rigging.query.filter_by(component_id=component.id).order_by(Rigging.date.desc()).all()
 
+    available_rigs = Rig.query.all()
+
+    if component.component_type.component_type == 'Canopy':
+        available_rigs = [rig for rig in available_rigs if
+                          not any(c.component_type.component_type == 'Canopy' for c in rig.components)]
+    elif component.component_type.component_type == 'Container':
+        available_rigs = [rig for rig in available_rigs if
+                          not any(c.component_type.component_type == 'Container' for c in rig.components)]
+    elif component.component_type.component_type == 'Reserve':
+        available_rigs = [rig for rig in available_rigs if
+                          not any(c.component_type.component_type == 'Reserve' for c in rig.components)]
+    elif component.component_type.component_type == 'Aad':
+        available_rigs = [rig for rig in available_rigs if
+                          not any(c.component_type.component_type == 'Aad' for c in rig.components)]
+
     return render_template('components/show_component.html', component=component, riggings=riggings,
                            component_types=component_types, component_sizes=component_sizes,
-                           component_statuses=component_statuses, component_models=component_models)
+                           available_rigs=available_rigs,component_statuses=component_statuses,
+                           component_models=component_models)
 
 @components_bp.route('/component/add', methods=['GET', 'POST'])
 def add_component():
@@ -148,8 +164,25 @@ def umount_component(component_id):
 
     return redirect(url_for('components.view_components'))
 
-#@components_bp.route('/component/mount/<int:component.id>', methods=['POST'])
-#def mount_component(component_id):
-#   pass"""
+@components_bp.route('/component/mount/<int:component_id>', methods=['POST'])
+def mount_component(component_id):
+    component_id = request.form.get('component_id')
+    current_aad_jumps = request.form.get('current_aad_jumps', type=int)
+
+    # Aquí deberás obtener el Rig al que se va a montar el componente, por ejemplo, a través de un hidden field
+    rig_id = request.form.get('rig_id', type=int)
+
+    component = Component.query.get_or_404(component_id)
+    rig = Rig.query.get_or_404(rig_id)
+
+    if component.component_type.component_type in ['Canopy', 'Container', 'Aad']:
+        if current_aad_jumps is not None:
+            component.aad_jumps_on_mount = current_aad_jumps
+
+    # Lógica para montar el componente
+    rig.components.append(component)
+    db.session.commit()
+
+    return redirect(url_for('components.view_components'))
 
 
