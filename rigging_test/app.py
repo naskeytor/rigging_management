@@ -5,10 +5,32 @@ from models.models import User
 from config import DevelopmentConfig
 from context_processors import (inject_rigging_types, inject_rigs, inject_rigging_sizes, inject_manufacturers,
                                 inject_rigging, inject_rigging_components, inject_component_processor)
+import mysql.connector
+from mysql.connector import errorcode
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(DevelopmentConfig)
+
+    # Create database if it doesn't exist
+    db_name = app.config['SQLALCHEMY_DATABASE_URI'].rsplit('/', 1)[-1]
+    db_uri = app.config['SQLALCHEMY_DATABASE_URI'].rsplit('/', 1)[0] + "/mysql"
+    try:
+        cnx = mysql.connector.connect(user='root', password='3664atanas', host='localhost')
+        cursor = cnx.cursor()
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name}")
+        cnx.commit()
+        cursor.close()
+        cnx.close()
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Something is wrong with your user name or password")
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            print("Database does not exist")
+        else:
+            print(err)
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
     login_manager = LoginManager()
     login_manager.init_app(app)
@@ -51,9 +73,12 @@ def create_app():
     app.context_processor(inject_rigging_sizes)
     app.context_processor(inject_manufacturers)
 
-
     @app.route('/')
     def index():
         return render_template('index.html')
 
     return app
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run()
