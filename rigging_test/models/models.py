@@ -6,7 +6,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Table, Column, Integer, String, ForeignKey, Date, Text
 from sqlalchemy.orm import relationship
-from extensions import db
+from rigging_test.extensions import db
 
 # Definir la metadata usando la instancia de db
 metadata = db.metadata

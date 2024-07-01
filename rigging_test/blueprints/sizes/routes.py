@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
-from models.models import Component, ComponentType, Size, Status, Model, RiggingType, Rigging, Manufacturer
-from extensions import db
+from rigging_test.models.models import Component, ComponentType, Size, Status, Model, RiggingType, Rigging, Manufacturer
+from rigging_test.extensions import db
 
 sizes_bp = Blueprint('sizes', __name__)
 

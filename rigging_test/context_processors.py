@@ -1,5 +1,5 @@
-from models.models import RiggingType, Rig, Rigging, Component, Manufacturer
-from utilities import prepare_component_data
+from rigging_test.models.models import RiggingType, Rig, Rigging, Component, Manufacturer
+from rigging_test.utilities import prepare_component_data
 
 def inject_rigging_types():
     rigging_types = RiggingType.query.all()

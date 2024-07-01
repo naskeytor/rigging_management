@@ -1,4 +1,4 @@
-from models.models import ComponentType, Component
+from rigging_test.models.models import ComponentType, Component
 
 
 def find_component_by_serial(serial_number, component_type_name):

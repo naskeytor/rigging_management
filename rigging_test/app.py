@@ -1,9 +1,9 @@
 from flask import Flask, render_template
-from extensions import db, migrate
+from rigging_test.extensions import db, migrate
 from flask_login import LoginManager
-from models.models import User
-from config import DevelopmentConfig
-from context_processors import (inject_rigging_types, inject_rigs, inject_rigging_sizes, inject_manufacturers,
+from rigging_test.models.models import User
+from rigging_test.config import DevelopmentConfig
+from rigging_test.context_processors import (inject_rigging_types, inject_rigs, inject_rigging_sizes, inject_manufacturers,
                                 inject_rigging, inject_rigging_components, inject_component_processor)
 import mysql.connector
 from mysql.connector import errorcode
@@ -43,16 +43,16 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-    from blueprints.auth.routes import auth_bp
-    from blueprints.components.routes import components_bp
-    from blueprints.rigs.routes import rigs_bp
-    from blueprints.rigging.routes import rigging_bp
-    from blueprints.manufacturers.routes import manufacturers_bp
-    from blueprints.sizes.routes import sizes_bp
-    from blueprints.statuses.routes import statuses_bp
-    from blueprints.component_types.routes import component_types_bp
-    from blueprints.models.routes import models_bp
-    from blueprints.main.routes import main_bp
+    from rigging_test.blueprints.components.routes import components_bp
+    from rigging_test.blueprints.rigs.routes import rigs_bp
+    from rigging_test.blueprints.rigging.routes import rigging_bp
+    from rigging_test.blueprints.manufacturers.routes import manufacturers_bp
+    from rigging_test.blueprints.sizes.routes import sizes_bp
+    from rigging_test.blueprints.statuses.routes import statuses_bp
+    from rigging_test.blueprints.component_types.routes import component_types_bp
+    from rigging_test.blueprints.models.routes import models_bp
+    from rigging_test.blueprints.main.routes import main_bp
+    from rigging_test.blueprints.auth.routes import auth_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(components_bp)

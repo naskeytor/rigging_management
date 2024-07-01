@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
-from models.models import Component, ComponentType, Size, Status, Model, RiggingType, Rigging, Rig
-from extensions import db
-from utilities import find_component_by_serial, prepare_component_data
+from rigging_test.models.models import Component, ComponentType, Size, Status, Model, RiggingType, Rigging, Rig
+from rigging_test.extensions import db
+from rigging_test.utilities import find_component_by_serial, prepare_component_data
 
 rigs_bp = Blueprint('rigs', __name__)
 

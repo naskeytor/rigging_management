@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
-from models.models import (Component, ComponentType, Size, Status, Model, RiggingType,
+from rigging_test.models.models import (Component, ComponentType, Size, Status, Model, RiggingType,
                            rig_component_association, Rigging, Manufacturer, Rig)
-from extensions import db
+from rigging_test.extensions import db
 
 components_bp = Blueprint('components', __name__)
 
