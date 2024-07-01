@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash
-from extensions import db
-from models.models import Model, Manufacturer
+from rigging_test.extensions import db
+from rigging_test.models.models import Model, Manufacturer
 
 
 models_bp = Blueprint('models', __name__)
