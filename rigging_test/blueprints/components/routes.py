@@ -3,6 +3,7 @@ from flask_login import login_required
 from rigging_test.models.models import (Component, ComponentType, Size, Status, Model, RiggingType,
                            rig_component_association, Rigging, Manufacturer, Rig)
 from rigging_test.extensions import db
+from rigging_test.utilities import mount_component_logic, umount_component_logic
 
 components_bp = Blueprint('components', __name__)
 
@@ -132,6 +133,11 @@ def delete_component(id):
 
 @components_bp.route('/component/umount/<int:component_id>', methods=['POST'])
 def umount_component(component_id):
+    current_aad_jumps = request.form.get('current_aad_jumps', type=int)
+    umount_component_logic(component_id, current_aad_jumps)
+    return redirect(url_for('components.view_components'))
+
+    """
     component = Component.query.get_or_404(component_id)
     rig_id = None
     for rig in component.rigs:
@@ -163,9 +169,17 @@ def umount_component(component_id):
         db.session.commit()
 
     return redirect(url_for('components.view_components'))
+    """
 
 @components_bp.route('/component/mount/<int:component_id>', methods=['POST'])
 def mount_component(component_id):
+    rig_id = request.form.get('rig_id', type=int)
+    current_aad_jumps = request.form.get('current_aad_jumps', type=int)
+    mount_component_logic(component_id, rig_id, current_aad_jumps)
+    return redirect(url_for('components.view_components'))
+
+
+    """
     component_id = request.form.get('component_id')
     current_aad_jumps = request.form.get('current_aad_jumps', type=int)
 
@@ -184,5 +198,6 @@ def mount_component(component_id):
     db.session.commit()
 
     return redirect(url_for('components.view_components'))
+    """
 
 

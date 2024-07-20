@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
 from rigging_test.models.models import Component, ComponentType, Size, Status, Model, RiggingType, Rigging, Rig
 from rigging_test.extensions import db
-from rigging_test.utilities import find_component_by_serial, prepare_component_data
+from rigging_test.utilities import find_component_by_serial, prepare_component_data, mount_component_logic, umount_component_logic
+
 
 rigs_bp = Blueprint('rigs', __name__)
 
@@ -30,6 +31,39 @@ def show_rig(rig_id):
 
 
 @rigs_bp.route('/rigs/add', methods=['GET', 'POST'])
+def add_rig():
+    if request.method == 'POST':
+        rig_number = request.form.get('rig_number')
+        existing_rig = Rig.query.filter_by(rig_number=rig_number).first()
+        if existing_rig:
+            error_message = "El número de rig ya existe. Por favor, elige otro."
+            return render_template('rigs/rigs.html', error_message=error_message)
+
+        new_rig = Rig(rig_number=rig_number)
+        db.session.add(new_rig)
+        db.session.flush()
+
+        canopy_serial = request.form.get('canopy')
+        container_serial = request.form.get('container')
+        reserve_serial = request.form.get('reserve')
+        aad_serial = request.form.get('aad')
+
+        for serial, type_name in [(canopy_serial, 'Canopy'), (container_serial, 'Container'),
+                                  (reserve_serial, 'Reserve'), (aad_serial, 'Aad')]:
+            component = Component.query.filter_by(serial_number=serial, component_type=type_name).first()
+            if component:
+                mount_component_logic(component.id, new_rig.id, None)
+
+        db.session.commit()
+        return redirect(url_for('rigs.list_rigs'))
+    else:
+        available_canopies, available_containers, available_reserves, available_aads = prepare_component_data()
+        return render_template('index.html', available_canopies=available_canopies,
+                               available_containers=available_containers, available_reserves=available_reserves,
+                               available_aads=available_aads)
+
+
+"""
 def add_rig():
     print("Request method:", request.method)
     if request.method == 'POST':
@@ -70,6 +104,7 @@ def add_rig():
         return render_template('index.html', available_canopies=available_canopies,
                                available_containers=available_containers, available_reserves=available_reserves,
                                available_aads=available_aads)
+    """
 
 
 @rigs_bp.route('/rigs/delete/<int:rig_id>', methods=['POST'])
@@ -92,6 +127,47 @@ def delete_rig(rig_id):
 
 
 @rigs_bp.route('/rigs/edit/<int:rig_id>', methods=['GET', 'POST'])
+def edit_rig(rig_id):
+    rig = Rig.query.get_or_404(rig_id)
+    if request.method == 'POST':
+        rig_number = request.form.get('rig_number')
+        existing_rig = Rig.query.filter_by(rig_number=rig_number).first()
+        if existing_rig and existing_rig.id != rig.id:
+            return render_template('rigs/edit_rig.html', rig=rig)
+
+        rig.rig_number = rig_number
+
+        component_updates = {
+            'Canopy': request.form.get('canopy'),
+            'Container': request.form.get('container'),
+            'Reserve': request.form.get('reserve'),
+            'Aad': request.form.get('aad')
+        }
+
+        for type_name, serial in component_updates.items():
+            if not serial:
+                continue
+
+            current_component = next((c for c in rig.components if c.component_type.component_type == type_name), None)
+
+            if not current_component or current_component.serial_number != serial:
+                if current_component:
+                    umount_component_logic(current_component.id, None)
+
+                new_component = Component.query.filter_by(serial_number=serial).first()
+                if new_component:
+                    mount_component_logic(new_component.id, rig.id, None)
+
+        db.session.commit()
+        return redirect(url_for('rigs.list_rigs'))
+    else:
+        available_canopies, available_containers, available_reserves, available_aads = prepare_component_data()
+        return render_template('rigs/edit_rig.html', available_canopies=available_canopies,
+                               available_containers=available_containers, available_reserves=available_reserves,
+                               available_aads=available_aads, rig=rig, _anchor='riggingTab')
+
+
+"""
 def edit_rig(rig_id):
     rig = Rig.query.get_or_404(rig_id)
     if request.method == 'POST':
@@ -143,3 +219,4 @@ def edit_rig(rig_id):
         return render_template('rigs/edit_rig.html', available_canopies=available_canopies,
                                available_containers=available_containers, available_reserves=available_reserves,
                                available_aads=available_aads, rig=rig, _anchor='riggingTab')
+    """

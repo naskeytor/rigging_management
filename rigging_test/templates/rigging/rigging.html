@@ -18,7 +18,7 @@
                 <td>{{ item.date | default('', true) }}</td>
                 <td>{{ item.rigger | default('', true) }}</td>
                 <td>{{ item.serial_numbers | default('', true) }}</td>
-                <td>{{ item.component.component_type | default('', true) }}</td>  <!-- Corregido el acceso a component -->
+                <td>{{ item.component.component_type | default('Rig', true) }}</td>
                 <td>{{ item.type_rigging.name | default('', true) }}</td>
                 <th>{{ item.description | default('', true) }}</th>
             </tr>
