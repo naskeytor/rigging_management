@@ -13,7 +13,7 @@ def list_rigs():
     return render_template('rigs/rigs.html', rigs=rigs)
 
 
-@rigs_bp.route('/rig/<int:rig_id>')
+@rigs_bp.route('/rig/<int:rig_id>', methods=['GET', 'POST'])
 @login_required
 def show_rig(rig_id):
     rig = Rig.query.get_or_404(rig_id)
