@@ -93,15 +93,9 @@
                                         data-target="#removeComponentFromRigModal-{{ rig.container.id }}">&times;
                                 </button>
                             {% else %}
-
-                                <button type="button" class="btn btn-danger btn-sm right-float" data-toggle="modal"
-                                        data-target="#removeComponentFromRigModal-{{ rig.container.id }}"
-                                        data-component-id="{{ rig.container.id }}">&times;
+                                <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                        data-target="#removeComponentFromRigModal-{{ rig.container.id }}">+
                                 </button>
-
-                                <!--<button type="button" class="btn btn-success btn-sm right-float" data-toggle="modal"
-                                        data-target="#addContainerModal">+
-                                </button>-->
                             {% endif %}
                         </div>
                     </div>
@@ -324,6 +318,7 @@
              aria-labelledby="removeComponentFromModalLabel-{{ component.id }}" aria-hidden="true">
             <div class="modal-dialog">
                 <form id="removeComponentForm-{{ component.id }}" method="post"
+                      action="{{ url_for('components.umount_component', component_id=component.id) }}"
                       onsubmit="return validateAndSubmitForm({{ component.id }})">
                     <div class="modal-content">
                         <div class="modal-header">
