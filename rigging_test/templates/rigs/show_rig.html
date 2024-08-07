@@ -93,9 +93,15 @@
                                         data-target="#removeComponentFromRigModal-{{ rig.container.id }}">&times;
                                 </button>
                             {% else %}
-                                <button type="button" class="btn btn-success btn-sm right-float" data-toggle="modal"
-                                        data-target="#addContainerModal">+
+
+                                <button type="button" class="btn btn-danger btn-sm right-float" data-toggle="modal"
+                                        data-target="#removeComponentFromRigModal-{{ rig.container.id }}"
+                                        data-component-id="{{ rig.container.id }}">&times;
                                 </button>
+
+                                <!--<button type="button" class="btn btn-success btn-sm right-float" data-toggle="modal"
+                                        data-target="#addContainerModal">+
+                                </button>-->
                             {% endif %}
                         </div>
                     </div>
@@ -317,7 +323,8 @@
         <div class="modal fade" id="removeComponentFromRigModal-{{ component.id }}" tabindex="-1"
              aria-labelledby="removeComponentFromModalLabel-{{ component.id }}" aria-hidden="true">
             <div class="modal-dialog">
-                <form action="{{ url_for('components.umount_component', component_id=component.id) }}" method="post">
+                <form id="removeComponentForm-{{ component.id }}" method="post"
+                      onsubmit="return validateAndSubmitForm({{ component.id }})">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="removeComponentFromModalLabel-{{ component.id }}">Remove
@@ -328,20 +335,27 @@
                         </div>
                         <div class="modal-body">
                             <p>Are you sure you want to remove this component from the rig?</p>
-                            <input type="hidden" name="component_id" value="{{ component.id }}">
-                            <label for="current_aad_jumps">Current AAD Jumps:</label>
-                            <input type="number" name="current_aad_jumps" id="current_aad_jumps" required>
-                            <div id="error-message" class="text-danger mt-2"></div>
+                            <label for="current_aad_jumps-{{ component.id }}">Current AAD Jumps:</label>
+                            <input type="number" name="current_aad_jumps" id="current_aad_jumps-{{ component.id }}"
+                                   required>
+                            <input type="hidden" name="aad_jumps_on_mount" id="aad_jumps_on_mount-{{ component.id }}"
+                                   value="{{ component.aad_jumps_on_mount }}">
+                            <div id="error-message-{{ component.id }}" class="text-danger mt-2"></div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-danger" onclick="validateAndSubmitForm()">Remove Component</button>
+                            <button type="submit" class="btn btn-danger">Remove Component</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     {% endfor %}
+
+
+
+
+
 
 {% endblock %}
 
@@ -350,18 +364,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-    <script>
-    function validateAndSubmitForm() {
-        const currentAadJumps = parseInt(document.getElementById('current_aad_jumps').value);
-        const aadJumpsOnMount = {{ component.aad_jumps_on_mount }}; // Asegúrate de pasar el valor correcto desde el backend
-        const errorMessageDiv = document.getElementById('error-message');
 
-        if (currentAadJumps < aadJumpsOnMount) {
-            errorMessageDiv.textContent = 'Current AAD Jumps cannot be less than AAD Jumps on Mount';
-        } else {
-            document.getElementById('removeComponentForm').submit();
-        }
-    }
-</script>
 
 {% endblock %}
