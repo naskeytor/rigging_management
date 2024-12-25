@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+< lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval'">
+
     <title>Rigging Management</title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
+<>
 <div class="navbar">
     <h1>Rigging Management</h1>
     <div class="logout-link">
@@ -271,6 +273,7 @@
     </div>
 </div>
 
+
 <script>
     function openAadJumpsModal() {
         $('#newRigModal').modal('hide');
@@ -287,7 +290,7 @@
         form.appendChild(input);
         $('#aadJumpsModal').modal('hide');
         form.submit();
-}
+    }
 </script>
 
 <script>
@@ -333,7 +336,51 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 
 
+<script>
+    function validateAndSubmitForm(componentId) {
+        const currentAadJumpsInput = document.getElementById(`current_aad_jumps-${componentId}`);
+        const aadJumpsOnMountInput = document.getElementById(`aad_jumps_on_mount-${componentId}`);
+        const errorMessageDiv = document.getElementById(`error-message-${componentId}`);
+
+        if (!currentAadJumpsInput || !aadJumpsOnMountInput || !errorMessageDiv) {
+            console.error('Element not found!');
+            return false;
+        }
+
+        const currentAadJumps = parseInt(currentAadJumpsInput.value, 10);
+        const aadJumpsOnMount = parseInt(aadJumpsOnMountInput.value, 10);
+
+        if (isNaN(currentAadJumps) || isNaN(aadJumpsOnMount)) {
+            errorMessageDiv.textContent = 'Both Current AAD Jumps and AAD Jumps on Mount must be integers';
+            return false; // Impide el envío del formulario si la validación falla
+        }
+
+        if (currentAadJumps < aadJumpsOnMount) {
+            errorMessageDiv.textContent = 'Current AAD Jumps cannot be less than AAD Jumps on Mount';
+            return false; // Impide el envío del formulario si la validación falla
+        } else {
+            return true; // Permite el envío del formulario si la validación pasa
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        $('.modal').on('shown.bs.modal', function (event) {
+            const button = $(event.relatedTarget); // Botón que activó el modal
+            const componentId = button.data('component-id'); // Extraer información de los atributos data-*
+            const modal = $(this);
+
+            modal.find('.btn-danger').off('click').on('click', function () {
+                const form = document.getElementById(`removeComponentForm-${componentId}`);
+                if (validateAndSubmitForm(componentId)) {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+
+</script>
+
+
 </body>
 </html>
-
-

@@ -134,42 +134,15 @@ def delete_component(id):
 @components_bp.route('/component/umount/<int:component_id>', methods=['POST'])
 def umount_component(component_id):
     current_aad_jumps = request.form.get('current_aad_jumps', type=int)
+    try:
+        umount_component_logic(component_id, current_aad_jumps)
+        flash('Component successfully unmounted', 'success')
+    except ValueError as e:
+        flash(str(e), 'danger')
     umount_component_logic(component_id, current_aad_jumps)
     return redirect(url_for('components.view_components'))
 
-    """
-    component = Component.query.get_or_404(component_id)
-    rig_id = None
-    for rig in component.rigs:
-        rig_id = rig.id
-        break
 
-    # Obtener el valor de current_aad_jumps si está disponible
-    current_aad_jumps = request.form.get('current_aad_jumps', type=int)
-
-    if component.component_type.component_type in ['Canopy', 'Container'] and current_aad_jumps is not None:
-        # Realiza los cálculos necesarios con current_aad_jumps
-        component.jumps += (current_aad_jumps - component.aad_jumps_on_mount)
-    elif component.component_type.component_type in['Aad'] and current_aad_jumps is not None:
-        for rig in component.rigs:
-            for comp in rig.components:
-                if comp.component_type.component_type in ['Canopy', 'Container']:
-                    comp.jumps += current_aad_jumps - comp.aad_jumps_on_mount
-                    db.session.add(comp)
-                elif comp.component_type.component_type in ['Aad']:
-                    comp.jumps = current_aad_jumps
-
-
-    if rig_id:
-        stmt = rig_component_association.delete().where(
-            rig_component_association.c.rig_id == rig_id,
-            rig_component_association.c.component_id == component_id
-        )
-        db.session.execute(stmt)
-        db.session.commit()
-
-    return redirect(url_for('components.view_components'))
-    """
 
 @components_bp.route('/component/mount/<int:component_id>', methods=['POST'])
 def mount_component(component_id):
@@ -177,27 +150,4 @@ def mount_component(component_id):
     current_aad_jumps = request.form.get('current_aad_jumps', type=int)
     mount_component_logic(component_id, rig_id, current_aad_jumps)
     return redirect(url_for('components.view_components'))
-
-
-    """
-    component_id = request.form.get('component_id')
-    current_aad_jumps = request.form.get('current_aad_jumps', type=int)
-
-    # Aquí deberás obtener el Rig al que se va a montar el componente, por ejemplo, a través de un hidden field
-    rig_id = request.form.get('rig_id', type=int)
-
-    component = Component.query.get_or_404(component_id)
-    rig = Rig.query.get_or_404(rig_id)
-
-    if component.component_type.component_type in ['Canopy', 'Container', 'Aad']:
-        if current_aad_jumps is not None:
-            component.aad_jumps_on_mount = current_aad_jumps
-
-    # Lógica para montar el componente
-    rig.components.append(component)
-    db.session.commit()
-
-    return redirect(url_for('components.view_components'))
-    """
-
 

@@ -30,10 +30,13 @@ def prepare_component_data():
 
 def umount_component_logic(component_id, current_aad_jumps):
     component = Component.query.get_or_404(component_id)
+
     rig_id = None
     for rig in component.rigs:
         rig_id = rig.id
         break
+
+
 
     if component.component_type.component_type in ['Canopy', 'Container'] and current_aad_jumps is not None:
         component.jumps += (current_aad_jumps - component.aad_jumps_on_mount)
@@ -42,7 +45,7 @@ def umount_component_logic(component_id, current_aad_jumps):
         for rig in component.rigs:
             for comp in rig.components:
                 if comp.component_type.component_type in ['Canopy', 'Container']:
-                    comp.jumps += current_aad_jumps - comp.aad_jumps_on_mount
+                    comp.jumps += (current_aad_jumps - comp.aad_jumps_on_mount)
                     db.session.add(comp)
                 elif comp.component_type.component_type in ['Aad']:
                     comp.jumps += current_aad_jumps

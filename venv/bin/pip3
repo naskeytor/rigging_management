@@ -1,4 +1,4 @@
-#!/home/nasko/dev_pruebas/rigging_management/venv/bin/python
+#!/home/nasko/dev_pruebas/rigging_management/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
