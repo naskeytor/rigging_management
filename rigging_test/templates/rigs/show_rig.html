@@ -63,9 +63,8 @@
                         </div>
                         <div>
                             {% if rig.canopy %}
-                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
-                                        data-target="#removeComponentFromRigModal"
-                                        data-component-id="{{ rig.canopy.id }}">&times;
+                                <button type="button" class="btn btn-danger btn-sm right-float" data-toggle="modal"
+                                        data-target="#removeComponentFromRigModal-{{ rig.canopy.id }}">&times;
                                 </button>
                             {% else %}
                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
@@ -78,6 +77,11 @@
             </tr>
 
 
+
+
+
+            naskito
+            
             <tr>
                 <th>Container</th>
                 <td>
@@ -94,7 +98,7 @@
                                 </button>
                             {% else %}
                                 <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
-                                        data-target="#removeComponentFromRigModal-{{ rig.container.id }}">+
+                                        data-target="#addCanopyModal-{{ rig.container.id }}">+
                                 </button>
                             {% endif %}
                         </div>
