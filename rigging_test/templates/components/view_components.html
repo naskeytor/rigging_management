@@ -31,14 +31,20 @@
 {% endblock %}
 
 {% block scripts %}
-    <script>
+
+    <script src="{{ url_for('static', filename='js/components.js') }}"></script>
+    /*
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll('.clickable-row').forEach(row => {
                 row.addEventListener('click', function () {
                     let componentId = this.getAttribute('data-id');
                     window.location.href = `/component/show/${componentId}`;
+
                 });
             });
         });
-    </script>
+
+     */
+
+
 {% endblock %}

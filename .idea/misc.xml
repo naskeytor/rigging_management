@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.10 (rigging_management)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (rigging_management)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Remote Python 3.11.2 (sftp://nasko@162.55.217.90:22/home/nasko/dev/rigging_management/venv/bin/python3)" project-jdk-type="Python SDK" />
 </project>
